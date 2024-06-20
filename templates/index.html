@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Input Form</title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+    <h2>Enter Text</h2>
+    <form action="/process_text" method="post">
+        <label for="user_text">Enter your text:</label><br>
+        <input type="text" id="user_text" name="user_text"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+    <div>
+        <h3>Response:</h3>
+        <p>{{ response }}</p>
+    </div>
+</body>
+</html>
