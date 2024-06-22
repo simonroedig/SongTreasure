@@ -2,19 +2,85 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Text Input Form</title>
-    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <title>SongTreasure</title>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="static/css/dropdowns.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
 </head>
 <body>
-    <h2>Enter Text</h2>
-    <form action="/process_text" method="post">
-        <label for="user_text">Enter your text:</label><br>
-        <input type="text" id="user_text" name="user_text"><br><br>
-        <input type="submit" value="Submit">
-    </form>
-    <div>
-        <h3>Response:</h3>
-        <p>{{ response }}</p>
+    <h id="idLogin">Login ►</h>
+
+    <br>
+    <hr id="hr1">
+    <br>
+
+    <h id="idTitle">SongTreasure</h>
+    <p id="idDescr">Uncover Hidden Gems on Spotify by Genre with SongTreasure.<br>Discover Promising Tracks You Haven’t Heard Yet.</p>
+
+    <br>
+    <hr id="hr2">
+    <br>
+
+    <div id="idParameters">
+        <div class="dropdown">
+            <button class="dropbtn" id="dropbtnGenre">Genre 🠉</button>
+            <div class="dropdown-content" id="genreOptions">
+                <a class="selectItem">Select:</a>
+                <a>Rock</a>
+                <a>Pop</a>
+                <a>Indie</a>
+            </div>
+        </div>
+    
+        <div class="dropdown">
+            <button class="dropbtn" id="dropbtnSongs">Songs 🠉</button>
+            <div class="dropdown-content" id="songsOptions">
+                <a class="selectItem">Select:</a>
+                <a>3</a>
+                <a>5</a>
+                <a>10</a>
+                <a>20</a>
+            </div>
+        </div>
     </div>
+
+    <div id="idFindWrapper">
+        <button id="findbtn">► Find songs 🔎</button>
+    </div>
+
+    <script>
+        var selectedGenre = '';
+        var selectedSongs = '';
+
+        document.querySelectorAll('#genreOptions a').forEach(item => {
+            console.log(item);
+            item.addEventListener('click', event => {
+                event.preventDefault();
+                selectedGenre = item.textContent;
+                updateFindButton();
+            });
+        });
+
+        document.querySelectorAll('#songsOptions a').forEach(item => {
+            console.log(item);
+            item.addEventListener('click', event => {
+                event.preventDefault();
+                selectedSongs = item.textContent;
+                updateFindButton();
+            });
+        });
+
+        function updateFindButton() {
+            if (selectedGenre === "Select:") {
+                selectedGenre = '';
+            }
+            if (selectedSongs === "Select:") {
+                selectedSongs = '';
+            }
+            const findButton = document.getElementById('findbtn');
+            findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
+        }
+    </script>
 </body>
 </html>
