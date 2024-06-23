@@ -52,6 +52,7 @@
     <script>
         var selectedGenre = '';
         var selectedSongs = '';
+        var findbtn = document.getElementById('findbtn');
 
         document.querySelectorAll('#genreOptions a').forEach(item => {
             console.log(item);
@@ -74,13 +75,36 @@
         function updateFindButton() {
             if (selectedGenre === "Select:") {
                 selectedGenre = '';
+                findbtn.style.backgroundColor = 'red';
             }
             if (selectedSongs === "Select:") {
                 selectedSongs = '';
+                findbtn.style.backgroundColor = 'red';
+            }
+            if (selectedGenre !== '' && selectedSongs !== '') {
+                findbtn.style.backgroundColor = 'green';
             }
             const findButton = document.getElementById('findbtn');
             findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
         }
+
+        findbtn.addEventListener('click', function() {
+            if (selectedGenre === '' || selectedSongs === '') {
+                //todo
+            } else {
+                // send post request to server
+                fetch('/find_songs', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        genre: selectedGenre,
+                        songs: selectedSongs,
+                    }),
+                })
+            }
+        });
     </script>
 </body>
 </html>
