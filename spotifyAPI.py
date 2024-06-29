@@ -7,7 +7,6 @@ import sys
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
 
-
 def read_env_file(file_path):
     env_vars = {}
     try:
