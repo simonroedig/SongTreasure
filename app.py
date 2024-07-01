@@ -1,23 +1,30 @@
 # Python 3.9.13
-from flask import Flask, jsonify, render_template, request
-from tensorflow import keras
+import os
+from flask import Flask, jsonify, render_template, request, redirect, session
+import spotifyAPI
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+sp_oauth, cache_handler, sp = spotifyAPI.init_oauth()
 
-# we need to then get the features of the song and pass it to the model
-# https://chatgpt.com/c/2b5593b3-1616-471b-b4a6-c2cc2db7bd29
-def load_model():
-    model = keras.models.load_model('spotify_model_1.h5')
-    return model
-
-def predict_popularity(metadata):
-    model = load_model()
-    prediction = model.predict(metadata)
-    return prediction
-    
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', variableTitel='Tristan')
+
+@app.route('/login')
+def login():
+    return spotifyAPI.validate_token(sp_oauth, cache_handler)
+
+@app.route('/callback')
+def callback():
+    return spotifyAPI.store_token(sp_oauth)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 @app.route('/find_songs', methods=['POST'])
 def post_endpoint():
@@ -27,4 +34,4 @@ def post_endpoint():
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8080)
