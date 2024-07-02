@@ -1,5 +1,6 @@
 import os
 import sys
+import logging as log
 from flask import redirect, request, session
 import datetime
 from spotipy import Spotify
@@ -26,10 +27,10 @@ def get_env_vars():
             raise ValueError("Missing Spotify Client ID")
         if not client_secret:
             raise ValueError("Missing Spotify Client Secret")
-        print("Client ID and Client Secret found")
+        log.info("Client ID and Client Secret found")
         return client_id, client_secret
     except Exception as e:
-        print(f"Error: An error occurred while reading the environment variables: {e}")
+        log.error(f"Error: An error occurred while reading the environment variables: {e}")
         sys.exit(1)
 
 
