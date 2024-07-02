@@ -14,7 +14,7 @@ isLoggedIn = False
 
 @app.route('/')
 def index():
-    return render_template('index.html', isLogedIn=isLoggedIn)
+    return render_template('index.html', isLoggedIn=isLoggedIn)
 
 @app.get('/login')
 def login():
@@ -31,6 +31,7 @@ def logout():
     session.clear()
     global isLoggedIn
     isLoggedIn = False
+    print("Logged out")
     return redirect('/')
 
 @app.route('/find_songs', methods=['POST'])
