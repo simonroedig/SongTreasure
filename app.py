@@ -14,7 +14,14 @@ isLoggedIn = False
 
 @app.route('/')
 def index():
-    return render_template('index.html', isLoggedIn=isLoggedIn)
+    tracks = spotifyAPI.get_newest_tracks('techno', 3)
+    print(tracks)
+    print('_________________________________________')
+    tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
+    print(tracks_for_frontend)
+
+
+    return render_template('index.html', isLoggedIn=isLoggedIn, tracks=tracks_for_frontend)
 
 @app.get('/login')
 def login():
@@ -40,7 +47,6 @@ def post_endpoint():
     response = {"message": "Data received successfully", "received_data": data}
     print(response)
     return jsonify(response)
-
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)

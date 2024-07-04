@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+.track {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.track img {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+.track div {
+    flex-grow: 1;
+}
+.track .title {
+    font-size: 18px;
+    font-weight: bold;
+}
+.track .artist {
+    font-size: 16px;
+}
+.track .length {
+    font-size: 14px;
+    color: gray;
+}

@@ -5,6 +5,7 @@
     <title>SongTreasure</title>
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
     <link rel="stylesheet" type="text/css" href="static/css/dropdowns.css">
+    <link rel="stylesheet" type="text/css" href="static/css/songs.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
 </head>
@@ -56,6 +57,18 @@
     <div id="idFindWrapper">
         <button id="findbtn">► Find songs 🔎</button>
     </div>
+
+    {% for track in tracks %}
+    <div class="track">
+        <img src="{{ track.album_cover }}" alt="Album Cover">
+        <div>
+            <div class="title">{{ track.title }}</div>
+            <div class="artist">{{ track.artist }}</div>
+            <div class="length">Length: {{ track.length }} seconds</div>
+            <div class="preview"><a href="{{ track.preview_url }}" target="_blank">Preview</a></div>
+        </div>
+    </div>
+    {% endfor %}
 
     <script>
         var selectedGenre = '';

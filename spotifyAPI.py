@@ -3,8 +3,9 @@ import sys
 import logging as log
 from flask import redirect, request, session
 import datetime
+import spotipy
 from spotipy import Spotify
-from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
 
@@ -16,7 +17,6 @@ scope = ("user-library-read "
          "playlist-read-collaborative "
          "playlist-modify-public "
          "playlist-modify-private")
-
 
 def get_env_vars():
     try:
@@ -64,22 +64,22 @@ def store_token(sp_oauth):
     return redirect('/')
 
 
-def get_newest_tracks(genre, limit=50):
+def get_newest_tracks(genre, limit):
+    client_id, client_secret = get_env_vars()
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
     today = datetime.date.today()
     query = f'genre:{genre} year:{today.year}'
-    results = sp.search(q=query, type='track', limit=50, market='US')
+    results = sp.search(q=query, type='track', limit=limit, market='US')
     tracks = results['tracks']['items']
 
     # Fetch additional tracks if necessary
     while len(tracks) < limit:
-        results = sp.search(q=query, type='track', limit=50, market='US', offset=len(tracks))
+        results = sp.search(q=query, type='track', limit=limit, market='US', offset=len(tracks))
         tracks.extend(results['tracks']['items'])
         if len(results['tracks']['items']) == 0:
             break
 
-    # Sort the tracks by release date (newest first)
-    tracks_sorted = sorted(tracks, key=lambda x: x['album']['release_date'], reverse=True)
-    return tracks_sorted[:limit]
+    return tracks
 
 
 # Function to get audio features for a list of track IDs
@@ -87,6 +87,20 @@ def get_audio_features(track_ids):
     features = sp.audio_features(tracks=track_ids)
     return {feature['id']: feature for feature in features}
 
+
+def get_track_information_to_display_in_frontend(track_list):
+    track_info = []
+    for track in track_list:
+        track_details = {
+            'title': track['name'],
+            'artist': track['artists'][0]['name'],
+            'album_cover': track['album']['images'][0]['url'],
+            'length': track['duration_ms'] // 1000,
+            'preview_url': track['preview_url'] if track['preview_url'] else 'No preview available'
+        }
+        track_info.append(track_details)
+    
+    return track_info
 
 # Function to print track metadata
 def print_track_metadata(track, audio_features, genre):
