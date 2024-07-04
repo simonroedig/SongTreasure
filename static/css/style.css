@@ -7,7 +7,7 @@
 }
 
 
-::-webkit-scrollbar {width: 1vw;}
+::-webkit-scrollbar {width: 10px;}
 ::-webkit-scrollbar-track {background: var(--scrolldark); border-radius: 10px;}
 ::-webkit-scrollbar-thumb {background: var(--scrollbrighter); border-radius: 10px;}
 ::-webkit-scrollbar-thumb:hover {background: var(--scrollbrightest);}
