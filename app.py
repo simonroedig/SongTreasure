@@ -1,6 +1,6 @@
 # Python 3.9.13
 import os
-from flask import Flask, jsonify, render_template, request, redirect, session
+from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
 import spotifyAPI
 from dotenv import load_dotenv
 
@@ -11,6 +11,9 @@ sp_oauth, cache_handler, sp = spotifyAPI.init_oauth()
 
 isLoggedIn = False
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(app.root_path, 'static/favicon.png', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def index():
