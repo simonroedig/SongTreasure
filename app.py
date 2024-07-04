@@ -3,12 +3,15 @@ import os
 from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
 import spotifyAPI
 from dotenv import load_dotenv
+import datetime
 
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 sp_oauth, cache_handler, sp = spotifyAPI.init_oauth()
 
+tracks = []
+tracks_for_frontend = []
 isLoggedIn = False
 
 @app.route('/favicon.ico')
@@ -17,14 +20,18 @@ def favicon():
 
 @app.route('/')
 def index():
-    tracks = spotifyAPI.get_newest_tracks('techno', 5)
-    print(tracks)
-    print('_________________________________________')
-    tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
-    print(tracks_for_frontend)
-
-
-    return render_template('index.html', isLoggedIn=isLoggedIn, tracks=tracks_for_frontend)
+    global isLoggedIn
+    global tracks
+    global tracks_for_frontend
+    
+    print(len(tracks))
+    return render_template(
+        'index.html',
+        isLoggedIn=isLoggedIn,
+        tracks=tracks_for_frontend,
+        tracks_ammount=len(tracks),
+        current_year=datetime.datetime.now().year
+    )
 
 @app.get('/login')
 def login():
@@ -47,9 +54,35 @@ def logout():
 @app.route('/find_songs', methods=['POST'])
 def post_endpoint():
     data = request.json
-    response = {"message": "Data received successfully", "received_data": data}
+    genre = data.get('genre')
+    songs = data.get('songs')
+    
+    if (genre is None or genre == '') or (songs is None or songs == ''):
+        return jsonify({
+        'tracks': 0,
+        'tracks_ammount': 0
+    })
+    
+    
+    songs = int(songs)
+    
+    response = (genre, songs)
     print(response)
-    return jsonify(response)
+    
+    global tracks
+    tracks = spotifyAPI.get_newest_tracks(genre, songs)
+    
+    global tracks_for_frontend
+    tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
+    
+    #print(tracks)
+    print('_________________________________________')
+    #print(tracks_for_frontend)
+    
+    return jsonify({
+        'tracks': tracks_for_frontend,
+        'tracks_ammount': len(tracks)
+    })
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)

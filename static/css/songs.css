@@ -1,24 +1,88 @@
 #idTrackResults {
-    height: 400px; 
     overflow-y: auto; 
     padding: 10px; 
     width: 70vw;
+    visibility: hidden;
+    display: none;
+    transition: 0.5s ease-in-out;
+}
+
+#idTrackResultColumn {
+    width: 70vw;
+    margin-top: 40px;
+    padding: 20px;
+    display: none;
+    flex-direction: row;
+    visibility: hidden;
+    transition: 0.5s ease-in-out;
+}
+
+#hr3 {
+    width: 70vw;
+    margin: 1vh 0;
+    border: 1px solid #f1f1f15e;
+    border-radius: 50%;
+    visibility: hidden;
+
+}
+
+.trackColumns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#idColumnTrackInfo0 {
+    width: 50px;
+    text-align: center;
+    margin-right: 15px;
+
+}
+
+#idColumnTrackInfo1 {
+    width: 590px;
+    text-align: center;
+}
+
+#idColumnTrackInfo2 {
+    width: 300px;
+    text-align: center;
+    color: #3af8ff;
+}
+
+#idColumnTrackInfo3 {
+    width: 300px;
+    text-align: center;
+}
+
+#idColumnTrackInfo4 {
+    width: 300px;
+    text-align: center;
+    padding-right: 10px;
+
 }
 
 .track {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
     justify-content: flex-start;
     cursor: pointer;
     padding: 10px;
+    margin-top: 5px;
 }
 
 .track:hover {
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     transition: 0.3s;
-    padding-left: 20px; 
+}
+
+.track-number {
+    display: flex;
+}
+
+.play-pause {
+    display: none;
 }
 
 .track img {
@@ -46,6 +110,10 @@
     color: rgb(255, 255, 255);
 }
 
+#idTreasureIcon {
+    width: 30px;
+}
+
 .TrackInfo1 {
     display: flex;
     flex-direction: column;
@@ -57,6 +125,12 @@
     flex-direction: column;
     width: 300px;
     align-items: center;
+    text-align: center;
+}
+
+.predictedPopularity {
+    font-weight: 600;
+    color: #3af8ff;
 }
 
 .TrackInfo3 {

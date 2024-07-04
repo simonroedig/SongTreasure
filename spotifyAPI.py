@@ -94,6 +94,19 @@ def get_track_information_to_display_in_frontend(track_list):
     for track in track_list:
         minutes, seconds = divmod(track['duration_ms'] // 1000, 60)
         length_formatted = f"{minutes:02}:{seconds:02}"
+        
+        formatted_release_date = track['album']['release_date'] if 'release_date' in track['album'] else 'Date not available',
+        # convert to string
+        formatted_release_date = str(formatted_release_date[0])
+        if formatted_release_date != 'Date not available':
+            # Convert the string to a datetime object
+            release_date_obj = datetime.datetime.strptime(formatted_release_date, '%Y-%m-%d')
+            
+            # Format the datetime object to the desired format
+            formatted_release_date = release_date_obj.strftime('%b. %d, %Y')
+        else:
+            formatted_release_date = 'Date not available'
+            
         track_details = {
             'title': track['name'],
             'artist': track['artists'][0]['name'],
@@ -101,8 +114,8 @@ def get_track_information_to_display_in_frontend(track_list):
             'length': length_formatted,
             'preview_url': track['preview_url'] if track['preview_url'] else 'No preview available',
             'spotify_uri': track['uri'] if track['preview_url'] else 'No preview available',
-            'release_date': track['album']['release_date'] if 'release_date' in track['album'] else 'Date not available',
             'popularity': track['popularity'],
+            'release_date': formatted_release_date,
             'album': track['album']['name'] if 'name' in track['album'] else 'Album not available',
         }
         track_info.append(track_details)
@@ -116,6 +129,7 @@ def print_track_metadata(track, audio_features, genre):
     track_id = track['id']
     features = audio_features.get(track_id, {})
 
+    """
     print(f"Track ID: {track_id}")
     print(f"Track Name: {track['name']}")
     print(f"Artists: {artists}")
@@ -139,6 +153,7 @@ def print_track_metadata(track, audio_features, genre):
     print(f"Tempo: {features.get('tempo', 'N/A')}")
     print(f"Time Signature: {features.get('time_signature', 'N/A')}")
     print("-" * 50)
+    """
 
 
 
