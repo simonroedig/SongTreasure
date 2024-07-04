@@ -122,3 +122,17 @@ footer {
 #idFooterText {
     margin: 0;
 }
+
+#idFooterText i {
+    transform: scale(1.2);
+}
+
+#idFooterText i:hover {
+    transform: scale(1.4);
+    transition: 0.2s ease;
+}
+
+#idFooterText a:hover {
+    text-decoration: underline;
+    transition: 0.2s ease;
+}
