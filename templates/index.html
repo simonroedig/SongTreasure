@@ -58,17 +58,42 @@
         <button id="findbtn">► Find songs 🔎</button>
     </div>
 
-    {% for track in tracks %}
-    <div class="track">
-        <img src="{{ track.album_cover }}" alt="Album Cover">
-        <div>
-            <div class="title">{{ track.title }}</div>
-            <div class="artist">{{ track.artist }}</div>
-            <div class="length">Length: {{ track.length }} seconds</div>
-            <div class="preview"><a href="{{ track.preview_url }}" target="_blank">Preview</a></div>
+    <div id="idTrackResults">
+        {% for track in tracks %}
+    
+        <div class="track" onclick="playAudio('{{ loop.index0 }}')">
+    
+            <div class="progress-container">
+                <div class="progress-circle" id="progress-{{ loop.index0 }}">
+                    <button class="play-pause" data-index="{{ loop.index0 }}">{{ loop.index0 + 1 }}</button>
+                </div>
+            </div>
+    
+            <img src="{{ track.album_cover }}" alt="Album Cover">
+            <audio id="audio-{{ loop.index0 }}" src="{{ track.preview_url }}"></audio>
+    
+            <div class="TrackInfo1">
+                <div class="title">{{ track.title }}</div>
+                <div class="artist">by {{ track.artist }}</div>
+            </div>
+    
+            <div class="TrackInfo2">
+                <div class="predictedPopularity">{{ track.popularity }}</div>
+            </div>
+    
+            <div class="TrackInfo3">
+                <div class="releaseDate">{{ track.release_date }}</div>
+            </div>
+    
+            <div class="TrackInfo4">
+                <div class="length">{{ track.length }}</div>
+            </div>
+    
         </div>
+    
+        {% endfor %}
     </div>
-    {% endfor %}
+    
 
     <script>
         var selectedGenre = '';
@@ -114,23 +139,57 @@
             findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
         }
 
-        findbtn.addEventListener('click', function() {
-            if (selectedGenre === '' || selectedSongs === '') {
-                //todo
+        function playAudio(index) {
+            var audio = document.getElementById('audio-' + index);
+            var track = document.querySelectorAll('.track')[index];
+            var button = track.querySelector('.play-pause');
+            var progressCircle = document.getElementById('progress-' + index);
+            
+            if (audio.paused) {
+                audio.play();
+                button.textContent = '❚❚';
+                updateProgress(audio, progressCircle, button);
             } else {
-                // send post request to server
-                fetch('/find_songs', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        genre: selectedGenre,
-                        songs: selectedSongs,
-                    }),
-                })
+                audio.pause();
+                button.textContent = '▶';
             }
-        });
+        }
+        
+        function updateProgress(audio, progressCircle, button) {
+            var duration = audio.duration;
+            var currentTime = audio.currentTime;
+            var progress = (currentTime / duration) * 100;
+            
+            if (progress > 0) {
+                progressCircle.style.background = `conic-gradient(#4caf50 ${progress}%, transparent ${progress}%)`;
+            } else {
+                progressCircle.style.background = 'transparent';
+            }
+            
+            if (!audio.paused) {
+                requestAnimationFrame(function() {
+                    updateProgress(audio, progressCircle, button);
+                });
+            } else {
+                button.textContent = '▶';
+            }
+        }
+        
+        document.addEventListener('play', function(e) {
+            var audios = document.getElementsByTagName('audio');
+            for (var i = 0, len = audios.length; i < len; i++) {
+                if (audios[i] != e.target) {
+                    audios[i].pause();
+                    audios[i].currentTime = 0;
+                    var track = audios[i].closest('.track');
+                    var button = track.querySelector('.play-pause');
+                    var progressCircle = track.querySelector('.progress-circle');
+                    button.textContent = '▶';
+                    progressCircle.style.background = 'transparent';
+                }
+            }
+        }, true);
+        
     </script>
 </body>
 </html>

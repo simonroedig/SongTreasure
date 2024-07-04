@@ -1,3 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+
+:root {
+    --scrolldark: #333333;
+    --scrollbrighter: #575757;
+    --scrollbrightest: #919191;
+}
+
+
+::-webkit-scrollbar {width: 1vw;}
+::-webkit-scrollbar-track {background: var(--scrolldark); border-radius: 10px;}
+::-webkit-scrollbar-thumb {background: var(--scrollbrighter); border-radius: 10px;}
+::-webkit-scrollbar-thumb:hover {background: var(--scrollbrightest);}
+
 * {
     margin:0;
     padding:0;
@@ -7,8 +21,7 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    /* add flexbox */
+    font-family: 'Sora', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;

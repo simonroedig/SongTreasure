@@ -14,7 +14,7 @@ isLoggedIn = False
 
 @app.route('/')
 def index():
-    tracks = spotifyAPI.get_newest_tracks('techno', 3)
+    tracks = spotifyAPI.get_newest_tracks('techno', 5)
     print(tracks)
     print('_________________________________________')
     tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)

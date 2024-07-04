@@ -1,28 +1,115 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
+#idTrackResults {
+    height: 400px; 
+    overflow-y: auto; 
+    padding: 10px; 
+    width: 70vw;
 }
+
 .track {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    justify-content: flex-start;
+    cursor: pointer;
+    padding: 10px;
 }
+
+.track:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: 0.3s;
+    padding-left: 20px; 
+}
+
 .track img {
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     margin-right: 20px;
+    border-radius: 10px;
 }
-.track div {
-    flex-grow: 1;
-}
+
 .track .title {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 16px;
+    font-weight: 600;
 }
 .track .artist {
-    font-size: 16px;
+    font-size: 14px;
+    font-weight: 300;
+    color: gray;
 }
 .track .length {
     font-size: 14px;
-    color: gray;
+}
+
+.track .releaseDate {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+.TrackInfo1 {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.TrackInfo2 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.TrackInfo3 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.TrackInfo4 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.progress-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.progress-circle {
+    width: 50px;
+    height: 50px;
+    background: conic-gradient(transparent);
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.play-pause {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #ffffff;
+}
+
+.reset-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    padding: 5px;
+}
+
+.reset-button:hover {
+    transform: scale(1.3);
+    transition: 0.2s ease-in-out;
 }

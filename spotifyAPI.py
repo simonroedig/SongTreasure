@@ -89,14 +89,21 @@ def get_audio_features(track_ids):
 
 
 def get_track_information_to_display_in_frontend(track_list):
+    # https://developer.spotify.com/documentation/web-api/reference/get-track
     track_info = []
     for track in track_list:
+        minutes, seconds = divmod(track['duration_ms'] // 1000, 60)
+        length_formatted = f"{minutes:02}:{seconds:02}"
         track_details = {
             'title': track['name'],
             'artist': track['artists'][0]['name'],
             'album_cover': track['album']['images'][0]['url'],
-            'length': track['duration_ms'] // 1000,
-            'preview_url': track['preview_url'] if track['preview_url'] else 'No preview available'
+            'length': length_formatted,
+            'preview_url': track['preview_url'] if track['preview_url'] else 'No preview available',
+            'spotify_uri': track['uri'] if track['preview_url'] else 'No preview available',
+            'release_date': track['album']['release_date'] if 'release_date' in track['album'] else 'Date not available',
+            'popularity': track['popularity'],
+            'album': track['album']['name'] if 'name' in track['album'] else 'Album not available',
         }
         track_info.append(track_details)
     
