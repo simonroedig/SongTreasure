@@ -18,6 +18,7 @@ scope = ("user-library-read "
          "playlist-modify-private")
 
 def get_env_vars():
+    #Loads all environment variables from the .env file
     try:
         load_dotenv()
         client_id = os.getenv('SPOTIFY_CLIENT_ID')
@@ -26,7 +27,6 @@ def get_env_vars():
             redirect_uri = os.getenv('REDIRECT_URI_DEV')
         else:
             redirect_uri = os.getenv('REDIRECT_URI')
-
 
         if not client_id:
             raise ValueError("Missing Spotify Client ID")
