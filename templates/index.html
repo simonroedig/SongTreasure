@@ -14,10 +14,8 @@
 <div id="login-area">
     {% if isLoggedIn %}
         <div id="user-profile">
-            <div id="profile-pic">
-                <img src="{{ profile_pic_url or url_for('static', filename='default-profile.png') }}"
-                     alt="Profile Picture">
-            </div>
+            <img id="imgProfile" src="{{ profile_pic_url or url_for('static', filename='default-profile.png') }}"
+                    alt="Profile Picture">
         </div>
         <a href="/logout">
             <button id="loginbtn">Logout ►</button>

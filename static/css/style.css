@@ -115,15 +115,12 @@ a {
     align-items: center;
 }
 
-#profile-pic {
-    width: 40px;
+
+#imgProfile {
+    border-radius: 100%;
     height: 40px;
-    border-radius: 50%;
+    width: 40px;
     object-fit: cover;
-    background-color: #1DB954; /* Same color as the login button */
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #profile-pic img {
