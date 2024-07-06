@@ -78,11 +78,11 @@ def post_endpoint():
     print(response)
     
     global tracks
-    tracks = spotifyAPI.get_newest_tracks(genre, songs)
+    newest_tracks = spotifyAPI.get_newest_tracks(genre, 50)
     
     popularity_dict = {}
     
-    for track in tracks:
+    for track in newest_tracks:
         current_track_id = track['id']
         
         track_metadata = spotifyAPI.get_audio_features(current_track_id)
@@ -109,10 +109,13 @@ def post_endpoint():
         
     sorted_popularity_dict = {k: v for k, v in sorted(popularity_dict.items(), key=lambda item: item[1], reverse=True)}
     
-    for i in range(len(songs)):
+    print(f'Popularity dict: {sorted_popularity_dict}')
         
+    # get the top n songs
+    tracks = [track for track in newest_tracks if track['id'] in list(sorted_popularity_dict.keys())][:songs]
         
-        
+    
+    print(f'Found tracks: {tracks}')
     
     global tracks_for_frontend
     tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
