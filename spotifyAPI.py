@@ -70,7 +70,7 @@ def store_token(sp_oauth):
 
 
 def get_newest_tracks(genre, limit):
-    client_id, client_secret = get_env_vars()
+    client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
     today = datetime.date.today()
     query = f'genre:{genre} year:{today.year}'

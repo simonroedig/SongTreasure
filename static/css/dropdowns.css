@@ -33,9 +33,9 @@
 	z-index: 1;
 
 	border-top-left-radius: 22px;
-	border-top-right-radius: 0px;
+	border-top-right-radius: 6px;
 	border-bottom-left-radius: 22px;
-	border-bottom-right-radius: 0px;
+	border-bottom-right-radius: 6px;
 	bottom: 100%; /* Position the dropdown above the button */
 }
 
