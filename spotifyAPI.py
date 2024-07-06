@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
-redirect_uri = "http://localhost:8080/callback"
 scope = ("user-library-read "
          "playlist-read-private "
          "playlist-read-collaborative "
@@ -23,19 +22,25 @@ def get_env_vars():
         load_dotenv()
         client_id = os.getenv('SPOTIFY_CLIENT_ID')
         client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+        if os.getenv('MODE') == 'DEV':
+            redirect_uri = os.getenv('REDIRECT_URI_DEV')
+        else:
+            redirect_uri = os.getenv('REDIRECT_URI')
+
+
         if not client_id:
             raise ValueError("Missing Spotify Client ID")
         if not client_secret:
             raise ValueError("Missing Spotify Client Secret")
         log.info("Client ID and Client Secret found")
-        return client_id, client_secret
+        return client_id, client_secret, redirect_uri
     except Exception as e:
         log.error(f"Error: An error occurred while reading the environment variables: {e}")
         sys.exit(1)
 
 
 def init_oauth():
-    client_id, client_secret = get_env_vars()
+    client_id, client_secret, redirect_uri = get_env_vars()
     cache_handler = FlaskSessionCacheHandler(session)
     sp_oauth = SpotifyOAuth(
         client_id=client_id,
