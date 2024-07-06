@@ -12,8 +12,6 @@ from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
 import pandas as pd
 
-global offset
-offset = 0# Global variable to keep track of the current offset
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -74,48 +72,41 @@ def store_token(sp_oauth):
     sp_oauth.get_access_token(request.args['code'])
     return redirect('/')
 
-
 def get_newest_tracks(genre, limit=50, timeframe="day"):
-    global offset
+    print(f"Fetching {limit} random tracks for genre: {genre} within timeframe: {timeframe}")
     client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
     end_date = datetime.date.today()
-
     if timeframe == 'year':
         start_date = end_date.replace(year=end_date.year - 1)
     elif timeframe == 'month':
         start_date = (end_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=end_date.day)
     elif timeframe == 'week':
         start_date = end_date - datetime.timedelta(weeks=1)
-    elif timeframe == 'day':
-        start_date = end_date - datetime.timedelta(days=1)
     else:
-        raise ValueError("Invalid timeframe. Choose 'year', 'month', 'week', or 'day'.")
+        start_date = end_date - datetime.timedelta(days=1)  # 'day'
 
-    global offset
-    tracks = []
-    max_offset = 1000
+    query = f"genre:{genre} year:{start_date.year}-{end_date.year}"
 
-    while len(tracks) < limit and offset < max_offset:
-        query = f'genre:{genre} year:{start_date.year}-{end_date.year}'
-        results = sp.search(q=query, type='track', limit=limit, market='US', offset=offset)
-        new_tracks = results['tracks']['items']
+    batch_size = min(100, max(limit * 2, 50))  # Fetch at least twice the limit or 50, whichever is larger
+    offset = random.randint(0, 1000)  # Random offset within a reasonable range
+    total_tracks = []
 
-        if not new_tracks:
-            break
+    try:
+        results = sp.search(q=query, type='track', limit=batch_size, market='US', offset=offset)
+        total_tracks = results['tracks']['items']
+        print(f"Retrieved {len(total_tracks)} tracks with offset {offset}")
+    except spotipy.SpotifyException as e:
+        print(f"Error in Spotify API call: {e}")
 
-        for track in new_tracks:
-            release_date = datetime.datetime.strptime(track['album']['release_date'], '%Y-%m-%d').date()
-            if start_date <= release_date <= end_date:
-                tracks.append(track)
-                if len(tracks) == limit:
-                    break
+    random.shuffle(total_tracks)
+    selected_tracks = total_tracks[:limit]
 
-        offset += limit
+    if len(selected_tracks) < limit:
+        print(f"Less tracks selected than requested. Retrieved only {len(selected_tracks)} tracks.")
+    return selected_tracks
 
-    tracks.sort(key=lambda x: x['album']['release_date'], reverse=True)
-    return tracks
 
 def get_track_information_to_display_in_frontend(track_list):
     # https://developer.spotify.com/documentation/web-api/reference/get-track
