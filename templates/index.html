@@ -11,45 +11,55 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
+<div id="login-area">
     {% if isLoggedIn %}
+        <div id="user-profile">
+            <div id="profile-pic">
+                <img src="{{ profile_pic_url or url_for('static', filename='default-profile.png') }}"
+                     alt="Profile Picture">
+            </div>
+        </div>
         <a href="/logout">
-        <button id="loginbtn">Logout ►</button>
+            <button id="loginbtn">Logout ►</button>
         </a>
     {% else %}
         <a href="/login">
-        <button id="loginbtn">Login ►</button>
+            <button id="loginbtn">Login ►</button>
         </a>
     {% endif %}
+</div>
 
-    <br>
-    <hr id="hr1">
-    <br>
+<br>
+<hr id="hr1">
+<br>
 
-    <h id="idTitle">SongTreasure</h>
-    <p id="idDescr">Uncover Hidden Gems on Spotify by Genre with SongTreasure.<br>Discover Promising Tracks You Haven’t Heard Yet.</p>
-
-    
-    
-    <div id="idTrackResultColumn">
-
-    
-        <div id="idColumnTrackInfo0" class="trackColumns">#</div>
-
-        <div id="idColumnTrackInfo1" class="trackColumns">Title</div>
-
-        <div id="idColumnTrackInfo2" class="trackColumns">Treasure Score <img id="idTreasureIcon" src="{{ url_for('static', filename='icon.png') }}" alt="Treasure Icon"></div>
-
-        <div id="idColumnTrackInfo3" class="trackColumns">Release Date</div>
-
-        <div id="idColumnTrackInfo4" class="trackColumns">Length</div>
+<h id="idTitle">SongTreasure</h>
+<p id="idDescr">Uncover Hidden Gems on Spotify by Genre with SongTreasure.<br>Discover Promising Tracks You Haven’t
+    Heard Yet.</p>
 
 
-    </div>
+<div id="idTrackResultColumn">
 
-    <hr id="hr3">
 
-    <div id="idTrackResults">
-        {% for track in tracks %}
+    <div id="idColumnTrackInfo0" class="trackColumns">#</div>
+
+    <div id="idColumnTrackInfo1" class="trackColumns">Title</div>
+
+    <div id="idColumnTrackInfo2" class="trackColumns">Treasure Score <img id="idTreasureIcon"
+                                                                          src="{{ url_for('static', filename='icon.png') }}"
+                                                                          alt="Treasure Icon"></div>
+
+    <div id="idColumnTrackInfo3" class="trackColumns">Release Date</div>
+
+    <div id="idColumnTrackInfo4" class="trackColumns">Length</div>
+
+
+</div>
+
+<hr id="hr3">
+
+<div id="idTrackResults">
+    {% for track in tracks %}
         <div class="track" data-index="{{ loop.index0 }}">
             <div class="progress-container">
                 <div class="progress-circle" id="progress-{{ loop.index0 }}">
@@ -73,108 +83,111 @@
                 <div class="length">{{ track.length }}</div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    
-    
-    <br>
-    <hr id="hr2">
-    <br>
+    {% endfor %}
+</div>
 
-    <div id="idParameters">
-        <div class="dropdown">
-            <button class="dropbtn" id="dropbtnGenre">Genre 🠉</button>
-            <div class="dropdown-content" id="genreOptions">
-                <a class="selectItem">Select:</a>
-                <a>Rock</a>
-                <a>Pop</a>
-                <a>Indie</a>
-            </div>
-        </div>
-    
-        <div class="dropdown">
-            <button class="dropbtn" id="dropbtnSongs">Songs 🠉</button>
-            <div class="dropdown-content" id="songsOptions">
-                <a class="selectItem">Select:</a>
-                <a>3</a>
-                <a>5</a>
-                <a>10</a>
-                <a>20</a>
-            </div>
+
+<br>
+<hr id="hr2">
+<br>
+
+<div id="idParameters">
+    <div class="dropdown">
+        <button class="dropbtn" id="dropbtnGenre">Genre 🠉</button>
+        <div class="dropdown-content" id="genreOptions">
+            <a class="selectItem">Select:</a>
+            <a>Rock</a>
+            <a>Pop</a>
+            <a>Indie</a>
         </div>
     </div>
 
-    <div id="idFindWrapper">
-        <button id="findbtn">► Find songs 🔎</button>
-    </div>
-    <footer>
-        <div id="idFooter">
-            <p id="idFooterText">{{ current_year }} SongTreasure  &nbsp;|&nbsp;  By <a href="https://simonroedig.com" target="_blank">Simon</a>, Tristan, Yannik, and Lukas  &nbsp;|&nbsp;&nbsp;  <a href="https://github.com/simonroedig/SongTreasure" target="_blank"><i class="fa fa-github"></i></a></p>
+    <div class="dropdown">
+        <button class="dropbtn" id="dropbtnSongs">Songs 🠉</button>
+        <div class="dropdown-content" id="songsOptions">
+            <a class="selectItem">Select:</a>
+            <a>3</a>
+            <a>5</a>
+            <a>10</a>
+            <a>20</a>
         </div>
-    </footer>
+    </div>
+</div>
 
-    <script>
-        var isLogged = "{{ isLoggedIn }}";
-        console.log(isLogged);
+<div id="idFindWrapper">
+    <button id="findbtn">► Find songs 🔎</button>
+</div>
+<footer>
+    <div id="idFooter">
+        <p id="idFooterText">{{ current_year }} SongTreasure &nbsp;|&nbsp; By <a href="https://simonroedig.com"
+                                                                                 target="_blank">Simon</a>, Tristan,
+            Yannik, and Lukas &nbsp;|&nbsp;&nbsp; <a href="https://github.com/simonroedig/SongTreasure" target="_blank"><i
+                    class="fa fa-github"></i></a></p>
+    </div>
+</footer>
 
-        document.body.style.backgroundImage = "url('{{ url_for('static', filename='background.png') }}')";
-        document.body.style.backgroundSize = 'cover'; // Ensure the image covers the whole background
-        document.body.style.backgroundPosition = 'center'; // Center the image
-        document.body.style.backgroundRepeat = 'no-repeat'; // Prevent the image from repeating
+<script>
+    var isLogged = "{{ isLoggedIn }}";
+    console.log(isLogged);
 
-        var selectedGenre = '';
-        var selectedSongs = '';
-        var findbtn = document.getElementById('findbtn');
+    document.body.style.backgroundImage = "url('{{ url_for('static', filename='background.png') }}')";
+    document.body.style.backgroundSize = 'cover'; // Ensure the image covers the whole background
+    document.body.style.backgroundPosition = 'center'; // Center the image
+    document.body.style.backgroundRepeat = 'no-repeat'; // Prevent the image from repeating
 
-        document.querySelectorAll('#genreOptions a').forEach(item => {
-            console.log(item);
-            item.addEventListener('click', event => {
-                event.preventDefault();
-                selectedGenre = item.textContent;
-                updateFindButton();
-            });
+    var selectedGenre = '';
+    var selectedSongs = '';
+    var findbtn = document.getElementById('findbtn');
+
+    document.querySelectorAll('#genreOptions a').forEach(item => {
+        console.log(item);
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            selectedGenre = item.textContent;
+            updateFindButton();
         });
+    });
 
-        document.querySelectorAll('#songsOptions a').forEach(item => {
-            console.log(item);
-            item.addEventListener('click', event => {
-                event.preventDefault();
-                selectedSongs = item.textContent;
-                updateFindButton();
-            });
+    document.querySelectorAll('#songsOptions a').forEach(item => {
+        console.log(item);
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            selectedSongs = item.textContent;
+            updateFindButton();
         });
+    });
 
-        function updateFindButton() {
-            if (selectedGenre === "Select:") {
-                selectedGenre = '';
-                findbtn.style.backgroundColor = 'red';
-            }
-            if (selectedSongs === "Select:") {
-                selectedSongs = '';
-                findbtn.style.backgroundColor = 'red';
-            }
-            if (selectedGenre !== '' && selectedSongs !== '') {
-                findbtn.style.backgroundColor = 'green';
-            }
-            const findButton = document.getElementById('findbtn');
-            findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
+    function updateFindButton() {
+        if (selectedGenre === "Select:") {
+            selectedGenre = '';
+            findbtn.style.backgroundColor = 'red';
         }
+        if (selectedSongs === "Select:") {
+            selectedSongs = '';
+            findbtn.style.backgroundColor = 'red';
+        }
+        if (selectedGenre !== '' && selectedSongs !== '') {
+            findbtn.style.backgroundColor = 'green';
+        }
+        const findButton = document.getElementById('findbtn');
+        findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
+    }
 
-        findbtn.addEventListener('click', function() {
-            if (selectedGenre === "bli") {
-                //todo
-            } else {
-                // send post request to server
-                fetch('/find_songs', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        genre: selectedGenre,
-                        songs: selectedSongs,
-                    }),
-                })
+    findbtn.addEventListener('click', function () {
+        if (selectedGenre === "bli") {
+            //todo
+        } else {
+            // send post request to server
+            fetch('/find_songs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    genre: selectedGenre,
+                    songs: selectedSongs,
+                }),
+            })
                 .then(response => response.json())
                 .then(data => {
                     var tracksAmmount = data.tracks_ammount;
@@ -202,17 +215,17 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
-            }
-        });
+        }
+    });
 
-        function updateTracks(tracks) {
-            var tracksContainer = document.getElementById('idTrackResults');
-            tracksContainer.innerHTML = '';
-            tracks.forEach((track, index) => {
-                var trackElement = document.createElement('div');
-                trackElement.className = 'track';
-                trackElement.dataset.index = index;
-                trackElement.innerHTML = `
+    function updateTracks(tracks) {
+        var tracksContainer = document.getElementById('idTrackResults');
+        tracksContainer.innerHTML = '';
+        tracks.forEach((track, index) => {
+            var trackElement = document.createElement('div');
+            trackElement.className = 'track';
+            trackElement.dataset.index = index;
+            trackElement.innerHTML = `
                     <div class="progress-container">
                         <div class="progress-circle" id="progress-${index}">
                             <div class="track-number">${index + 1}</div>
@@ -235,115 +248,114 @@
                         <div class="length">${track.length}</div>
                     </div>
                 `;
-                tracksContainer.appendChild(trackElement);
-            });
-        }
-
-        function attachTrackEventListeners() {
-            var tracks = document.querySelectorAll('.track');
-            tracks.forEach(function(track) {
-                track.addEventListener('mouseover', function() {
-                    var index = this.dataset.index;
-                    if (currentlyPlaying != index) {
-                        this.querySelector('.track-number').style.display = 'none';
-                        this.querySelector('.play-pause').style.display = 'flex';
-                    }
-                });
-
-                track.addEventListener('mouseout', function() {
-                    var index = this.dataset.index;
-                    if (currentlyPlaying != index) {
-                        this.querySelector('.track-number').style.display = 'flex';
-                        this.querySelector('.play-pause').style.display = 'none';
-                    }
-                });
-
-                track.addEventListener('click', function() {
-                    var index = this.dataset.index;
-                    playAudio(index);
-                });
-            });
-        }
-
-        let currentlyPlaying = null;
-
-        function playAudio(index) {
-            console.log('playAudio called with index:', index);
-            var audio = document.getElementById('audio-' + index);
-            var track = document.querySelectorAll('.track')[index];
-            if (!audio || !track) {
-                console.error('Audio or track element not found for index:', index);
-                return;
-            }
-            var button = track.querySelector('.play-pause');
-            var progressCircle = document.getElementById('progress-' + index);
-            var trackNumber = track.querySelector('.track-number');
-
-            if (currentlyPlaying !== null && currentlyPlaying !== index) {
-                stopAudio(currentlyPlaying);
-            }
-
-            if (audio.paused) {
-                audio.play();
-                button.textContent = '❚❚';
-                updateProgress(audio, progressCircle, button);
-                currentlyPlaying = index;
-                trackNumber.style.display = 'none';
-                button.style.display = 'flex';
-            } else {
-                audio.pause();
-                button.textContent = '▶';
-                currentlyPlaying = index;
-            }
-        }
-
-        function stopAudio(index) {
-            console.log('stopAudio called with index:', index);
-            var audio = document.getElementById('audio-' + index);
-            var track = document.querySelectorAll('.track')[index];
-            if (!audio || !track) {
-                console.error('Audio or track element not found for index:', index);
-                return;
-            }
-            var button = track.querySelector('.play-pause');
-            var progressCircle = document.getElementById('progress-' + index);
-            var trackNumber = track.querySelector('.track-number');
-
-            audio.pause();
-            audio.currentTime = 0;
-            button.textContent = '▶';
-            progressCircle.style.background = 'transparent';
-            trackNumber.style.display = 'flex';
-            button.style.display = 'none';
-            currentlyPlaying = null;
-        }
-
-        function updateProgress(audio, progressCircle, button) {
-            var duration = audio.duration;
-            var currentTime = audio.currentTime;
-            var progress = (currentTime / duration) * 100;
-
-            if (progress > 0) {
-                progressCircle.style.background = `conic-gradient(#1DB954 ${progress}%, transparent ${progress}%)`;
-            } else {
-                progressCircle.style.background = 'transparent';
-            }
-
-            if (!audio.paused) {
-                requestAnimationFrame(function() {
-                    updateProgress(audio, progressCircle, button);
-                });
-            } else {
-                button.textContent = '▶';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            attachTrackEventListeners();
+            tracksContainer.appendChild(trackElement);
         });
+    }
+
+    function attachTrackEventListeners() {
+        var tracks = document.querySelectorAll('.track');
+        tracks.forEach(function (track) {
+            track.addEventListener('mouseover', function () {
+                var index = this.dataset.index;
+                if (currentlyPlaying != index) {
+                    this.querySelector('.track-number').style.display = 'none';
+                    this.querySelector('.play-pause').style.display = 'flex';
+                }
+            });
+
+            track.addEventListener('mouseout', function () {
+                var index = this.dataset.index;
+                if (currentlyPlaying != index) {
+                    this.querySelector('.track-number').style.display = 'flex';
+                    this.querySelector('.play-pause').style.display = 'none';
+                }
+            });
+
+            track.addEventListener('click', function () {
+                var index = this.dataset.index;
+                playAudio(index);
+            });
+        });
+    }
+
+    let currentlyPlaying = null;
+
+    function playAudio(index) {
+        console.log('playAudio called with index:', index);
+        var audio = document.getElementById('audio-' + index);
+        var track = document.querySelectorAll('.track')[index];
+        if (!audio || !track) {
+            console.error('Audio or track element not found for index:', index);
+            return;
+        }
+        var button = track.querySelector('.play-pause');
+        var progressCircle = document.getElementById('progress-' + index);
+        var trackNumber = track.querySelector('.track-number');
+
+        if (currentlyPlaying !== null && currentlyPlaying !== index) {
+            stopAudio(currentlyPlaying);
+        }
+
+        if (audio.paused) {
+            audio.play();
+            button.textContent = '❚❚';
+            updateProgress(audio, progressCircle, button);
+            currentlyPlaying = index;
+            trackNumber.style.display = 'none';
+            button.style.display = 'flex';
+        } else {
+            audio.pause();
+            button.textContent = '▶';
+            currentlyPlaying = index;
+        }
+    }
+
+    function stopAudio(index) {
+        console.log('stopAudio called with index:', index);
+        var audio = document.getElementById('audio-' + index);
+        var track = document.querySelectorAll('.track')[index];
+        if (!audio || !track) {
+            console.error('Audio or track element not found for index:', index);
+            return;
+        }
+        var button = track.querySelector('.play-pause');
+        var progressCircle = document.getElementById('progress-' + index);
+        var trackNumber = track.querySelector('.track-number');
+
+        audio.pause();
+        audio.currentTime = 0;
+        button.textContent = '▶';
+        progressCircle.style.background = 'transparent';
+        trackNumber.style.display = 'flex';
+        button.style.display = 'none';
+        currentlyPlaying = null;
+    }
+
+    function updateProgress(audio, progressCircle, button) {
+        var duration = audio.duration;
+        var currentTime = audio.currentTime;
+        var progress = (currentTime / duration) * 100;
+
+        if (progress > 0) {
+            progressCircle.style.background = `conic-gradient(#1DB954 ${progress}%, transparent ${progress}%)`;
+        } else {
+            progressCircle.style.background = 'transparent';
+        }
+
+        if (!audio.paused) {
+            requestAnimationFrame(function () {
+                updateProgress(audio, progressCircle, button);
+            });
+        } else {
+            button.textContent = '▶';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        attachTrackEventListeners();
+    });
 
 
-        
-    </script>
+</script>
 </body>
 </html>

@@ -86,17 +86,49 @@ a {
     margin-bottom: 10vh;
 }
 
+#login-area {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+}
+
 #loginbtn {
-    color: white;
-	padding: 12px 36px;
-	font-size: 16px;
-	border: none;
-	border-radius: 40px;
-	cursor: pointer;
-	font-weight: 600;
-	text-align: center;
+    padding: 10px 20px;
     background-color: #1DB954;
-    margin-top: 5vh;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    height: 40px;  /* Match height with profile picture */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#user-profile {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #1DB954; /* Same color as the login button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profile-pic img {
+    width: 70%; /* Adjust this value to control the size of the icon within the circle */
+    height: 70%;
+    object-fit: contain;
 }
 
 .selectItem {

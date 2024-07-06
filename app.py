@@ -23,15 +23,24 @@ def index():
     global isLoggedIn
     global tracks
     global tracks_for_frontend
-    
-    print(len(tracks))
+
+    profile_pic_url = None
+    if isLoggedIn:
+        try:
+            user_info = sp.current_user()
+            profile_pic_url = user_info['images'][0]['url'] if user_info['images'] else None
+        except:
+            profile_pic_url = None
+
     return render_template(
         'index.html',
         isLoggedIn=isLoggedIn,
         tracks=tracks_for_frontend,
         tracks_ammount=len(tracks),
-        current_year=datetime.datetime.now().year
+        current_year=datetime.datetime.now().year,
+        profile_pic_url=profile_pic_url
     )
+
 
 @app.get('/login')
 def login():
