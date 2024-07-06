@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="{{ url_for('favicon') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.6/lottie.min.js"></script>
+
 </head>
 <body>
 <div id="login-area">
@@ -85,6 +87,16 @@
 </div>
 
 <img id="idLoadingGif" src="/static/loading_animation.gif">
+
+<!--
+<lottie-player src="{{ url_for('static', filename='loading_anim.json') }}"
+                 background="transparent"  
+                 speed="1"  
+                 style="width: 300px; height: 300px;"  
+                 loop  
+                 autoplay>
+</lottie-player>
+-->
 
 <br>
 <hr id="hr2">
@@ -219,20 +231,23 @@
     }
 
     findbtn.addEventListener('click', function () {
-        document.getElementById('idTrackResults').style.visibility = 'hidden';
-        document.getElementById('idTrackResults').style.display = 'none';
+        idTrackResults = document.getElementById('idTrackResults');
+        idLoadingGif = document.getElementById('idLoadingGif');
+        idTrackResultColumn = document.getElementById('idTrackResultColumn');
+        idHR3 = document.getElementById('hr3');
 
-        
-        if (selectedGenre === "Select:" || selectedSongs === "Select:") {
-            document.getElementById('idLoadingGif').style.display = 'none';
-            document.getElementById('idLoadingGif').style.visibility = 'hidden';
-            document.getElementById('hr3').style.visibility = 'hidden';
+        idTrackResults.style.visibility = 'hidden';
+        idTrackResults.style.display = 'none';
+
+        if ((selectedGenre === "0" || selectedSongs === "0") || (selectedGenre === "" || selectedSongs === "")) {
+            idLoadingGif.style.display = 'none';
+            idLoadingGif.style.visibility = 'hidden';
+            idHR3.style.visibility = 'hidden';
 
         } else {
-
-            document.getElementById('idLoadingGif').style.display = 'inline';
-            document.getElementById('idLoadingGif').style.visibility = 'visible';
-            document.getElementById('hr3').style.visibility = 'visible';
+            idLoadingGif.style.display = 'inline';
+            idLoadingGif.style.visibility = 'visible';
+            idHR3.style.visibility = 'visible';
 
             // send post request to server
             fetch('/find_songs', {
@@ -251,24 +266,24 @@
                     console.log(tracksAmmount);
 
                     if (tracksAmmount == 0) {
-                        document.getElementById('idTrackResults').style.visibility = 'hidden';
-                        document.getElementById('idTrackResults').style.display = 'none';
-                        document.getElementById('idTrackResultColumn').style.visibility = 'hidden';
-                        document.getElementById('idTrackResultColumn').style.display = 'none';
-                        document.getElementById('hr3').style.visibility = 'hidden';
+                        idTrackResults.style.visibility = 'hidden';
+                        idTrackResults.style.display = 'none';
+                        idTrackResultColumn.style.visibility = 'hidden';
+                        idTrackResultColumn.style.display = 'none';
+                        idHR3.style.visibility = 'hidden';
 
-                        document.getElementById('idLoadingGif').style.display = 'none';
-                        document.getElementById('idLoadingGif').style.display = 'hidden';
+                        idLoadingGif.style.display = 'none';
+                        idLoadingGif.style.display = 'hidden';
                     } else {
-                        document.getElementById('idLoadingGif').style.display = 'none';
-                        document.getElementById('idTrackResultColumn').style.visibility = 'hidden';
+                        idLoadingGif.style.display = 'none';
+                        idTrackResultColumn.style.visibility = 'hidden';
 
-                        document.getElementById('idTrackResults').style.visibility = 'visible';
-                        document.getElementById('idTrackResults').scrollTop = 0;
-                        document.getElementById('idTrackResults').style.display = 'inline';
-                        document.getElementById('idTrackResultColumn').style.visibility = 'visible';
-                        document.getElementById('idTrackResultColumn').style.display = 'flex';
-                        document.getElementById('hr3').style.visibility = 'visible';
+                        idTrackResults.style.visibility = 'visible';
+                        idTrackResults.scrollTop = 0;
+                        idTrackResults.style.display = 'inline';
+                        idTrackResultColumn.style.visibility = 'visible';
+                        idTrackResultColumn.style.display = 'flex';
+                        idHR3.style.visibility = 'visible';
 
                         updateTracks(data.tracks);
                         attachTrackEventListeners();

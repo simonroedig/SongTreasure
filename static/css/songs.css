@@ -23,7 +23,7 @@
     border: 1px solid #f1f1f15e;
     border-radius: 50%;
     visibility: hidden;
-
+    margin-top: 2vh;
 }
 
 .trackColumns {
