@@ -166,3 +166,10 @@ footer {
     text-decoration: underline;
     transition: 0.2s ease;
 }
+
+
+#idLoadingGif{
+    width: 10vw;
+    display: none;
+    visibility: hidden;
+}

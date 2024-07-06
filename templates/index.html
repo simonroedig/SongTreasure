@@ -84,6 +84,7 @@
     {% endfor %}
 </div>
 
+<img id="idLoadingGif" src="/static/loading_animation.gif">
 
 <br>
 <hr id="hr2">
@@ -218,9 +219,21 @@
     }
 
     findbtn.addEventListener('click', function () {
-        if (selectedGenre === "bli") {
-            //todo
+        document.getElementById('idTrackResults').style.visibility = 'hidden';
+        document.getElementById('idTrackResults').style.display = 'none';
+
+        
+        if (selectedGenre === "Select:" || selectedSongs === "Select:") {
+            document.getElementById('idLoadingGif').style.display = 'none';
+            document.getElementById('idLoadingGif').style.visibility = 'hidden';
+            document.getElementById('hr3').style.visibility = 'hidden';
+
         } else {
+
+            document.getElementById('idLoadingGif').style.display = 'inline';
+            document.getElementById('idLoadingGif').style.visibility = 'visible';
+            document.getElementById('hr3').style.visibility = 'visible';
+
             // send post request to server
             fetch('/find_songs', {
                 method: 'POST',
@@ -243,7 +256,13 @@
                         document.getElementById('idTrackResultColumn').style.visibility = 'hidden';
                         document.getElementById('idTrackResultColumn').style.display = 'none';
                         document.getElementById('hr3').style.visibility = 'hidden';
+
+                        document.getElementById('idLoadingGif').style.display = 'none';
+                        document.getElementById('idLoadingGif').style.display = 'hidden';
                     } else {
+                        document.getElementById('idLoadingGif').style.display = 'none';
+                        document.getElementById('idTrackResultColumn').style.visibility = 'hidden';
+
                         document.getElementById('idTrackResults').style.visibility = 'visible';
                         document.getElementById('idTrackResults').scrollTop = 0;
                         document.getElementById('idTrackResults').style.display = 'inline';
