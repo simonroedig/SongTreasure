@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 import logging as log
 from flask import redirect, request, session
@@ -10,6 +11,9 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
 import pandas as pd
+
+global offset
+offset = 0# Global variable to keep track of the current offset
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -71,21 +75,46 @@ def store_token(sp_oauth):
     return redirect('/')
 
 
-def get_newest_tracks(genre, limit):
+def get_newest_tracks(genre, limit=50, timeframe="day"):
+    global offset
     client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
-    today = datetime.date.today()
-    query = f'genre:{genre} year:{today.year}'
-    results = sp.search(q=query, type='track', limit=limit, market='US')
-    tracks = results['tracks']['items']
 
-    # Fetch additional tracks if necessary
-    while len(tracks) < limit:
-        results = sp.search(q=query, type='track', limit=limit, market='US', offset=len(tracks))
-        tracks.extend(results['tracks']['items'])
-        if len(results['tracks']['items']) == 0:
+    end_date = datetime.date.today()
+
+    if timeframe == 'year':
+        start_date = end_date.replace(year=end_date.year - 1)
+    elif timeframe == 'month':
+        start_date = (end_date.replace(day=1) - datetime.timedelta(days=1)).replace(day=end_date.day)
+    elif timeframe == 'week':
+        start_date = end_date - datetime.timedelta(weeks=1)
+    elif timeframe == 'day':
+        start_date = end_date - datetime.timedelta(days=1)
+    else:
+        raise ValueError("Invalid timeframe. Choose 'year', 'month', 'week', or 'day'.")
+
+    global offset
+    tracks = []
+    max_offset = 1000
+
+    while len(tracks) < limit and offset < max_offset:
+        query = f'genre:{genre} year:{start_date.year}-{end_date.year}'
+        results = sp.search(q=query, type='track', limit=50, market='US', offset=offset)
+        new_tracks = results['tracks']['items']
+
+        if not new_tracks:
             break
 
+        for track in new_tracks:
+            release_date = datetime.datetime.strptime(track['album']['release_date'], '%Y-%m-%d').date()
+            if start_date <= release_date <= end_date:
+                tracks.append(track)
+                if len(tracks) == limit:
+                    break
+
+        offset += limit
+
+    tracks.sort(key=lambda x: x['album']['release_date'], reverse=True)
     return tracks
 
 def get_track_information_to_display_in_frontend(track_list):
