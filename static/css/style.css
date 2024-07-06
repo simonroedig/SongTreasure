@@ -124,8 +124,8 @@ a {
 }
 
 #profile-pic img {
-    width: 70%; /* Adjust this value to control the size of the icon within the circle */
-    height: 70%;
+    width: 50%; /* Adjust this value to control the size of the icon within the circle */
+    height: 50%;
     object-fit: contain;
 }
 
