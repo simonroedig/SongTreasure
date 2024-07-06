@@ -3,11 +3,13 @@ import sys
 import logging as log
 from flask import redirect, request, session
 import datetime
+import keras
 import spotipy
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
+import pandas as pd
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -86,13 +88,6 @@ def get_newest_tracks(genre, limit):
 
     return tracks
 
-
-# Function to get audio features for a list of track IDs
-def get_audio_features(track_ids):
-    features = sp.audio_features(tracks=track_ids)
-    return {feature['id']: feature for feature in features}
-
-
 def get_track_information_to_display_in_frontend(track_list):
     # https://developer.spotify.com/documentation/web-api/reference/get-track
     track_info = []
@@ -126,6 +121,41 @@ def get_track_information_to_display_in_frontend(track_list):
         track_info.append(track_details)
     
     return track_info
+
+def load_model():
+    model = keras.models.load_model('model.keras')
+    return model
+
+def predict_popularity(metadata):
+    model = load_model()
+    prediction = model.predict(metadata)
+    return prediction
+
+def get_audio_features(track_ids):
+    client_id, client_secret, redirect_uri = get_env_vars()
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+    
+    return sp.audio_features(tracks=track_ids)
+
+def filter_relevant_audio_features(track_metadata):
+    relevant_keys = {
+        "acousticness", "danceability", "duration_ms", "energy",
+        "instrumentalness", "liveness", "loudness", "speechiness",
+        "tempo", "valence", "key", "mode", "time_signature"
+    }
+    # Add a check to handle different structures
+    if isinstance(track_metadata, list):
+        track_metadata = track_metadata[0]  # Assuming the list contains one dict
+
+    filtered_metadata = {key: track_metadata[key] for key in relevant_keys if key in track_metadata}
+    return filtered_metadata
+    
+def create_df_from_track_metadata(track_metadata):
+    # Ensure each value is a list
+    track_metadata = {k: [v] if not isinstance(v, list) else v for k, v in track_metadata.items()}
+    df = pd.DataFrame(track_metadata)
+    sorted_df = df.sort_index(axis=1)
+    return sorted_df
 
 # Function to print track metadata
 def print_track_metadata(track, audio_features, genre):

@@ -1,6 +1,7 @@
 # Python 3.9.13
 import os
 from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
+import numpy as np
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
@@ -72,14 +73,37 @@ def post_endpoint():
         'tracks_ammount': 0
     })
     
-    
     songs = int(songs)
-    
     response = (genre, songs)
     print(response)
     
     global tracks
     tracks = spotifyAPI.get_newest_tracks(genre, songs)
+    
+    for track in tracks:
+        current_track_id = track['id']
+        
+        track_metadata = spotifyAPI.get_audio_features(current_track_id)
+        print(track_metadata)
+        
+        print("-------------------------------------------------")
+        
+        # this give us a dictionary with the relevant audio features
+        track_relevant_metadata = spotifyAPI.filter_relevant_audio_features(track_metadata)
+        print(track_relevant_metadata)
+        
+        print("-------------------------------------------------")
+        
+        track_metadata_df = spotifyAPI.create_df_from_track_metadata(track_relevant_metadata)
+        print(track_metadata_df)
+        
+        predicted_popularity = (spotifyAPI.predict_popularity(track_metadata_df))[0][0]
+        
+        print("-------------------------------------------------")
+        print(predicted_popularity)
+        print("-------------------------------------------------")
+        
+        
     
     global tracks_for_frontend
     tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
@@ -88,6 +112,7 @@ def post_endpoint():
     print('_________________________________________')
     #print(tracks_for_frontend)
     
+    # keep returning this, as it is the only way to get the data to the frontend
     return jsonify({
         'tracks': tracks_for_frontend,
         'tracks_ammount': len(tracks)
