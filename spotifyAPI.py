@@ -72,10 +72,12 @@ def store_token(sp_oauth):
     sp_oauth.get_access_token(request.args['code'])
     return redirect('/')
 
+
 def get_newest_tracks(genre, limit=50, timeframe="day"):
     print(f"Fetching {limit} random tracks for genre: {genre} within timeframe: {timeframe}")
     client_id, client_secret, redirect_uri = get_env_vars()
-    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+    sp = spotipy.Spotify(
+        client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
 
     end_date = datetime.date.today()
     if timeframe == 'year':
@@ -89,14 +91,30 @@ def get_newest_tracks(genre, limit=50, timeframe="day"):
 
     query = f"genre:{genre} year:{start_date.year}-{end_date.year}"
 
-    batch_size = min(100, max(limit * 2, 50))  # Fetch at least twice the limit or 50, whichever is larger
-    offset = random.randint(0, 1000)  # Random offset within a reasonable range
     total_tracks = []
+    seen_track_ids = set()
+    max_tracks_to_fetch = limit * 100
+    batch_size = 50
+    batches_needed = (max_tracks_to_fetch + batch_size - 1) // batch_size
 
     try:
-        results = sp.search(q=query, type='track', limit=batch_size, market='US', offset=offset)
-        total_tracks = results['tracks']['items']
-        print(f"Retrieved {len(total_tracks)} tracks with offset {offset}")
+        for i in range(batches_needed):
+            offset = random.randint(0, 1000)
+            results = sp.search(q=query, type='track', limit=batch_size, market='US', offset=offset)
+            new_tracks = results['tracks']['items']
+
+
+            for track in new_tracks:
+                if track['id'] not in seen_track_ids:
+                    total_tracks.append(track)
+                    seen_track_ids.add(track['id'])
+
+            print(
+                f"Batch {i + 1}: Retrieved {len(new_tracks)} tracks, {len(total_tracks)} unique so far with offset {offset}")
+
+            if len(total_tracks) >= max_tracks_to_fetch:
+                print("Reached maximum desired number of tracks.")
+                break
     except spotipy.SpotifyException as e:
         print(f"Error in Spotify API call: {e}")
 
