@@ -80,6 +80,8 @@ def post_endpoint():
     global tracks
     tracks = spotifyAPI.get_newest_tracks(genre, songs)
     
+    popularity_dict = {}
+    
     for track in tracks:
         current_track_id = track['id']
         
@@ -102,6 +104,13 @@ def post_endpoint():
         print("-------------------------------------------------")
         print(predicted_popularity)
         print("-------------------------------------------------")
+        
+        popularity_dict[current_track_id] = predicted_popularity
+        
+    sorted_popularity_dict = {k: v for k, v in sorted(popularity_dict.items(), key=lambda item: item[1], reverse=True)}
+    
+    for i in range(len(songs)):
+        
         
         
     
