@@ -78,47 +78,37 @@ def post_endpoint():
     print(response)
     
     global tracks
-    newest_tracks = spotifyAPI.get_newest_tracks(genre, 50)
     
-    popularity_dict = {}
-    
+    requested_track_ammount = songs + 10
+    newest_tracks = spotifyAPI.get_newest_tracks(genre, requested_track_ammount)
+        
     for track in newest_tracks:
         current_track_id = track['id']
         
         track_metadata = spotifyAPI.get_audio_features(current_track_id)
-        print(track_metadata)
-        
-        print("-------------------------------------------------")
         
         # this give us a dictionary with the relevant audio features
         track_relevant_metadata = spotifyAPI.filter_relevant_audio_features(track_metadata)
         print(track_relevant_metadata)
         
-        print("-------------------------------------------------")
-        
         track_metadata_df = spotifyAPI.create_df_from_track_metadata(track_relevant_metadata)
-        print(track_metadata_df)
         
         predicted_popularity = (spotifyAPI.predict_popularity(track_metadata_df))[0][0]
+        track['predicted_popularity'] = int(predicted_popularity)
         
         print("-------------------------------------------------")
         print(predicted_popularity)
         print("-------------------------------------------------")
         
-        popularity_dict[current_track_id] = predicted_popularity
         
-    sorted_popularity_dict = {k: v for k, v in sorted(popularity_dict.items(), key=lambda item: item[1], reverse=True)}
+    sorted_tracks_with_pop = sorted(newest_tracks, key=lambda x: x['predicted_popularity'], reverse=True)
+    sorted_tracks_with_pop_stripped = sorted_tracks_with_pop[:songs]
     
-    print(f'Popularity dict: {sorted_popularity_dict}')
-        
-    # get the top n songs
-    tracks = [track for track in newest_tracks if track['id'] in list(sorted_popularity_dict.keys())][:songs]
-        
-    
-    print(f'Found tracks: {tracks}')
+    print(sorted_tracks_with_pop_stripped)
+
     
     global tracks_for_frontend
-    tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(tracks)
+    tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(sorted_tracks_with_pop_stripped)
     
     #print(tracks)
     print('_________________________________________')
@@ -127,7 +117,7 @@ def post_endpoint():
     # keep returning this, as it is the only way to get the data to the frontend
     return jsonify({
         'tracks': tracks_for_frontend,
-        'tracks_ammount': len(tracks)
+        'tracks_ammount': len(sorted_tracks_with_pop_stripped)
     })
 
 if __name__ == '__main__':

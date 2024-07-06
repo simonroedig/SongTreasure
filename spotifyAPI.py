@@ -114,7 +114,7 @@ def get_track_information_to_display_in_frontend(track_list):
             'length': length_formatted,
             'preview_url': track['preview_url'] if track['preview_url'] else 'No preview available',
             'spotify_uri': track['uri'] if track['preview_url'] else 'No preview available',
-            'popularity': track['popularity'],
+            'popularity': track['predicted_popularity'],
             'release_date': formatted_release_date,
             'album': track['album']['name'] if 'name' in track['album'] else 'Album not available',
         }
