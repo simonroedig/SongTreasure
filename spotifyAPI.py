@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
-redirect_uri = "http://127.0.0.1:8080/callback"
+redirect_uri = "http://localhost:8080/callback"
 scope = ("user-library-read "
          "playlist-read-private "
          "playlist-read-collaborative "
