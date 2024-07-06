@@ -75,7 +75,7 @@ def store_token(sp_oauth):
     return redirect('/')
 
 
-def get_newest_tracks(genre, limit=50, timeframe="day"):
+def get_newest_tracks(genre, limit=50, timeframe="day", market="DE"):
     global offset
     client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
@@ -99,7 +99,7 @@ def get_newest_tracks(genre, limit=50, timeframe="day"):
 
     while len(tracks) < limit and offset < max_offset:
         query = f'genre:{genre} year:{start_date.year}-{end_date.year}'
-        results = sp.search(q=query, type='track', limit=50, market='US', offset=offset)
+        results = sp.search(q=query, type='track', limit=limit, market=market, offset=offset)
         new_tracks = results['tracks']['items']
 
         if not new_tracks:
