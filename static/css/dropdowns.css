@@ -4,7 +4,6 @@
 }
 
 .dropbtn {
-	color: white;
 	padding: 12px 16px;
 	font-size: 16px;
 	border: none;
@@ -12,14 +11,41 @@
 	cursor: pointer;
 	font-weight: 600;
 	text-align: center;
+	transition: 0.2s ease;
 }
 
 #dropbtnGenre {
-	background-color: #B0A695;
+	background-color: transparent;
+	transition: 0.2s ease;
+}
+
+@media (hover: hover) {
+	#dropbtnGenre:hover {
+		letter-spacing: 2px;
+	}
+}
+
+@media (hover: hover) {
+	#genreOptions:hover + #dropbtnGenre {
+		letter-spacing: 2px;
+	}
 }
 
 #dropbtnSongs {
-	background-color: #776B5D;
+	background-color: transparent;
+	transition: 0.2s ease;
+}
+
+@media (hover: hover) {
+	#dropbtnSongs:hover {
+		letter-spacing: 2px;
+	}
+}
+
+@media (hover: hover) {
+	#songsOptions:hover + #dropbtnSongs {
+		letter-spacing: 2px;
+	}
 }
 
 .dropdown-content {
@@ -31,7 +57,6 @@
 	overflow-y: auto;
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 	z-index: 1;
-
 	border-top-left-radius: 22px;
 	border-top-right-radius: 6px;
 	border-bottom-left-radius: 22px;
@@ -51,17 +76,43 @@
 	border-bottom-right-radius: 0px;
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {
-	background-color: #ddd;
+@media (hover: hover) {
+	/* Change color of dropdown links on hover */
+	.dropdown-content a:hover {
+		background-color: #ddd;
+	}
 }
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-	display: block;
+@media (hover: hover) {
+	/* Show the dropdown menu on hover */
+	.dropdown:hover .dropdown-content {
+		display: block;
+	}
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {
-	background-color: #3e8e41;
+@media (hover: hover) {
+	/* Change the background color of the dropdown button when the dropdown content is shown */
+	.dropdown:hover .dropbtn {
+		background-color: #3e8e41;
+	}
+}
+
+.dropdown-content::-webkit-scrollbar {
+    width: 8px; /* Adjust the width of the scrollbar */
+}
+
+.dropdown-content::-webkit-scrollbar-track {
+    background: #d4d4d4; /* Light grey track */
+    border-radius: 10px; /* Rounded corners for the track */
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    background: #888; /* Darker grey scrollbar handle */
+    border-radius: 10px; /* Rounded corners for the handle */
+}
+
+@media (hover: hover) {
+	.dropdown-content::-webkit-scrollbar-thumb:hover {
+	    background: #555; /* Even darker grey scrollbar handle on hover */
+	}
 }

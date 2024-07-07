@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
     <link rel="stylesheet" type="text/css" href="static/css/dropdowns.css">
     <link rel="stylesheet" type="text/css" href="static/css/songs.css">
+    <link rel="stylesheet" type="text/css" href="static/css/loading.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="{{ url_for('favicon') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,11 +17,13 @@
 <div id="login-area">
     {% if isLoggedIn %}
         <div id="user-profile">
-            <img id="imgProfile" src="{{ profile_pic_url or url_for('static', filename='default-profile.png') }}"
-                    alt="Profile Picture">
+            <a href="https://open.spotify.com/" target="_blank">
+                <img id="imgProfile" src="{{ profile_pic_url or url_for('static', filename='default-profile.png') }}"
+                     alt="Profile Picture">
+            </a>
         </div>
         <a href="/logout">
-            <button id="loginbtn">Logout ►</button>
+            <button id="loginbtn">◄ Logout</button>
         </a>
     {% else %}
         <a href="/login">
@@ -28,6 +31,8 @@
         </a>
     {% endif %}
 </div>
+
+<img id="idLogo" src="{{ url_for('static', filename='favicon.png') }}" alt="SongTreasure Logo">
 
 <br>
 <hr id="hr1">
@@ -86,7 +91,8 @@
     {% endfor %}
 </div>
 
-<img id="idLoadingGif" src="/static/loading_animation.gif">
+<!--<img id="idLoadingGif" src="/static/loading_animation.gif">-->
+<div class="loader" id="idLoadingGif"></div>
 
 <!--
 <lottie-player src="{{ url_for('static', filename='loading_anim.json') }}"
@@ -98,13 +104,22 @@
 </lottie-player>
 -->
 
-<br>
 <hr id="hr2">
 <br>
 
 <div id="idParameters">
     <div class="dropdown">
-        <button class="dropbtn" id="dropbtnGenre">Genre 🠉</button>
+        <div class="dropdown-content" id="songsOptions">
+            <a class="selectItem">Select:</a>
+            <a>3</a>
+            <a>5</a>
+            <a>10</a>
+            <a>20</a>
+        </div>
+        <button class="dropbtn" id="dropbtnSongs">Songs 🠉</button>
+    </div>
+
+    <div class="dropdown">
         <div class="dropdown-content" id="genreOptions">
             <a class="selectItem">Select:</a>
             <a>Rock</a>
@@ -157,22 +172,15 @@
             <a>Shoegaze</a>
             <a>Synthpop</a>
         </div>
+        <button class="dropbtn" id="dropbtnGenre">Genre 🠉</button>
     </div>
 
-    <div class="dropdown">
-        <button class="dropbtn" id="dropbtnSongs">Songs 🠉</button>
-        <div class="dropdown-content" id="songsOptions">
-            <a class="selectItem">Select:</a>
-            <a>3</a>
-            <a>5</a>
-            <a>10</a>
-            <a>20</a>
-        </div>
-    </div>
+    
+    
 </div>
 
 <div id="idFindWrapper">
-    <button id="findbtn">► Find songs 🔎</button>
+    <button id="findbtn">► Find Songs 🔎</button>
 </div>
 <footer>
     <div id="idFooter">
@@ -217,17 +225,16 @@
     function updateFindButton() {
         if (selectedGenre === "Select:") {
             selectedGenre = '';
-            findbtn.style.backgroundColor = 'red';
+            findbtn.style.borderColor = '#ff4a4a';
         }
         if (selectedSongs === "Select:") {
             selectedSongs = '';
-            findbtn.style.backgroundColor = 'red';
+            findbtn.style.borderColor = '#ff4a4a';
         }
         if (selectedGenre !== '' && selectedSongs !== '') {
-            findbtn.style.backgroundColor = 'green';
+            findbtn.style.borderColor = '#3af8ff';
         }
-        const findButton = document.getElementById('findbtn');
-        findButton.textContent = `► Find ${selectedSongs} ${selectedGenre.toLowerCase()} songs 🔎`;
+        findbtn.innerHTML = `► Find <u style="text-decoration: underline;">${selectedSongs}</u> <u style="text-decoration: underline;">${selectedGenre}</u> Songs 🔎`;
     }
 
     findbtn.addEventListener('click', function () {
@@ -243,6 +250,8 @@
             idLoadingGif.style.display = 'none';
             idLoadingGif.style.visibility = 'hidden';
             idHR3.style.visibility = 'hidden';
+            idTrackResultColumn.style.visibility = 'hidden';
+            idTrackResultColumn.style.display = 'none';
 
         } else {
             idLoadingGif.style.display = 'inline';

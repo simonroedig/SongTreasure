@@ -6,11 +6,13 @@
     --scrollbrightest: #919191;
 }
 
-
 ::-webkit-scrollbar {width: 10px;}
 ::-webkit-scrollbar-track {background: var(--scrolldark); border-radius: 10px;}
 ::-webkit-scrollbar-thumb {background: var(--scrollbrighter); border-radius: 10px;}
-::-webkit-scrollbar-thumb:hover {background: var(--scrollbrightest);}
+
+@media (hover: hover) {
+    ::-webkit-scrollbar-thumb:hover {background: var(--scrollbrightest);}
+}
 
 * {
     margin:0;
@@ -18,6 +20,7 @@
     box-sizing:border-box;
     text-decoration:none;  
     color: #F3EEEA;
+    font-family: 'Sora', sans-serif;
 }
 
 body {
@@ -40,23 +43,43 @@ a {
     cursor: pointer;
 }
 
+@keyframes rotate {
+    0% {
+        transform: rotate(-15deg);
+    }
+    50% {
+        transform: rotate(15deg);
+    }
+    100% {
+        transform: rotate(-15deg);
+    }
+}
+
+#idLogo {
+    width: 75px;
+    height: 75px;
+    animation: rotate 15s ease infinite;
+}
+
 #hr1 {
     width: 15%;
     margin: 1vh 0;
     border: 1px solid #f1f1f15e;
     border-radius: 50%;
+    transition: 2s ease;
 }
 
 #hr2 {
     width: 70vw;
-    margin: 0 0 1vh 0;
+    margin: 1vh 0 1vh 0;
     border: 1px solid #f1f1f15e;
     border-radius: 50%;
+    transition: 2s ease;
 }
 
 #idTitle {
     font-size: 3rem;
-    margin-bottom: 1vh;
+    margin-bottom: 0.6vh;
     font-weight: 600;
 }
 
@@ -64,6 +87,8 @@ a {
     font-size: 1rem;
     font-weight: 400;
     text-align: center;
+    margin-bottom: 0.7vh;
+
 }
 
 #idFindWrapper {
@@ -74,7 +99,6 @@ a {
 }
 
 #findbtn {
-	color: white;
 	padding: 12px 16px;
 	font-size: 16px;
 	border: none;
@@ -82,45 +106,71 @@ a {
 	cursor: pointer;
 	font-weight: 600;
 	text-align: center;
-    background-color: red;
+    border: 1px solid #ff4a4a;
     margin-bottom: 10vh;
+    background-color: transparent;
+    transition: 0.2s ease;
+}
+
+@media (hover: hover) {
+    #findbtn:hover {
+        border-radius: 10px;
+    }
 }
 
 #login-area {
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 20px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 #loginbtn {
-    padding: 10px 20px;
+    padding: 12px 16px;
     font-family: 'Sora', sans-serif;
-    background-color: #1DB954;
-    color: white;
     border: none;
     border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
     height: 40px;  /* Match height with profile picture */
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: transparent;
+    border: 1px solid #f1f1f1;
+    transition: 0.2s ease;
+}
+
+@media (hover: hover) {
+    #loginbtn:hover {
+        border-radius: 10px;
+    }
 }
 
 #user-profile {
     margin-right: 10px;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
-
 
 #imgProfile {
     border-radius: 100%;
     height: 40px;
     width: 40px;
     object-fit: cover;
+    border: 1px solid #f1f1f1;
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    #imgProfile:hover {
+        border: 3px solid #f1f1f1;
+    }
 }
 
 #profile-pic img {
@@ -155,21 +205,28 @@ footer {
 
 #idFooterText i {
     transform: scale(1.2);
-}
-
-#idFooterText i:hover {
-    transform: scale(1.4);
     transition: 0.2s ease;
 }
 
-#idFooterText a:hover {
-    text-decoration: underline;
+#idFooterText a {
     transition: 0.2s ease;
 }
 
+@media (hover: hover) {
+    #idFooterText i:hover {
+        transform: scale(1.4);
+        transition: 0.2s ease;
+    }
+}
+
+@media (hover: hover) {
+    #idFooterText a:hover {
+        text-decoration: underline;
+        transition: 0.2s ease;
+    }
+}
 
 #idLoadingGif{
-    width: 10vw;
     display: none;
     visibility: hidden;
 }
