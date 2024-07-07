@@ -11,6 +11,8 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from spotipy.cache_handler import FlaskSessionCacheHandler
 from dotenv import load_dotenv
 import pandas as pd
+import pickle
+import numpy as np
 
 
 # Set default encoding to UTF-8
@@ -167,6 +169,7 @@ def load_model():
 def predict_popularity(metadata):
     model = load_model()
     prediction = model.predict(metadata)
+    prediction = np.clip(prediction, 0, 100)
     return prediction
 
 def get_audio_features(track_ids):
@@ -193,6 +196,12 @@ def create_df_from_track_metadata(track_metadata):
     track_metadata = {k: [v] if not isinstance(v, list) else v for k, v in track_metadata.items()}
     df = pd.DataFrame(track_metadata)
     sorted_df = df.sort_index(axis=1)
+    with open('normalization.pkl', 'rb') as f:
+        dataframes = pickle.load(f)
+
+    x_mean = dataframes["x_mean"]
+    x_std = dataframes["x_std"]
+    sorted_df = (sorted_df - x_mean) / x_std
     return sorted_df
 
 # Function to print track metadata
