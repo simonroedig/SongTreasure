@@ -245,6 +245,7 @@
         .then(data => {
             if (data.success) {
                 var currentElement = document.getElementById(tracker);
+                console.log(currentElement)
                 if (currentElement) {
                     currentElement.innerText = "✔ " + currentElement.innerText;
                 } else {
@@ -259,6 +260,7 @@
                     } else {
                         console.error(`Element with ID ${tracker} not found.`);
                     }
+                    alert('Track is already in playlist.');
                 }
             }
         })
@@ -416,7 +418,6 @@
         tracksContainer.innerHTML = '';
         tracks.forEach((track, index) => {
             var trackElement = document.createElement('div');
-            var tracker = "playlist" + index;
             trackElement.className = 'track';
             trackElement.dataset.index = index;
             trackElement.innerHTML = `
@@ -449,7 +450,7 @@
                                     <a class="selectItem">Select:</a>
                                     {% if user_playlists %}
                                         {% for item in user_playlists %}
-                                            <a href="#" id="{{ item['id'] }}" onclick="addToPlaylist('{{ item['id'] }}', '${track.id}', '{{ item['id'] }}')">{{ item['name'] }}</a>
+                                            <a href="#" id="{{ item['id'] }}-${index}" onclick="addToPlaylist('{{ item['id'] }}', '${track.id}', '{{ item['id'] }}-${index}')">{{ item['name'] }}</a>
                                         {% endfor %}
                                     {% else %}
                                         <a href="#">No playlist found</a>
