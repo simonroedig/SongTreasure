@@ -19,4 +19,7 @@ df['key'] = df['key'].map(reverse_key_conversion)
 df['mode'] = df['mode'].map(reverse_mode_conversion)
 df['time_signature'] = df['time_signature'].map(reverse_time_signature_conversion)
 
+# Change id to track_id
+df.rename(columns={'id': 'track_id'}, inplace=True)
+
 df.to_csv('songs.csv', index=False)
