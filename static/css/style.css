@@ -37,6 +37,7 @@ body {
     background-size: cover; /* Ensure the image covers the whole background */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Prevent the image from repeating */
+    overflow-x: hidden;
 }
 
 a {
@@ -59,6 +60,14 @@ a {
     width: 75px;
     height: 75px;
     animation: rotate 15s ease infinite;
+    transition: 0.2s ease;
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    #idLogo:hover {
+        opacity: 0.7;
+    }
 }
 
 #hr1 {
@@ -90,6 +99,7 @@ a {
     margin-bottom: 0.7vh;
 
 }
+
 
 #idFindWrapper {
     display: flex;
@@ -123,7 +133,6 @@ a {
     top: 20px;
     left: 20px;
     display: flex;
-    align-items: center;
     justify-content: center;
 }
 
@@ -133,7 +142,7 @@ a {
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     height: 40px;  /* Match height with profile picture */
     display: flex;

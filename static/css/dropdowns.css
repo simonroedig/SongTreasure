@@ -83,19 +83,13 @@
 	}
 }
 
-@media (hover: hover) {
-	/* Show the dropdown menu on hover */
-	.dropdown:hover .dropdown-content {
-		display: block;
-	}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+	display: block;
 }
 
-@media (hover: hover) {
-	/* Change the background color of the dropdown button when the dropdown content is shown */
-	.dropdown:hover .dropbtn {
-		background-color: #3e8e41;
-	}
-}
+
 
 .dropdown-content::-webkit-scrollbar {
     width: 8px; /* Adjust the width of the scrollbar */

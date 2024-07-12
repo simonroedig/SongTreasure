@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="static/css/dropdowns.css">
     <link rel="stylesheet" type="text/css" href="static/css/songs.css">
     <link rel="stylesheet" type="text/css" href="static/css/loading.css">
+    <link rel="stylesheet" type="text/css" href="static/css/mobile.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="{{ url_for('favicon') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -32,7 +33,9 @@
     {% endif %}
 </div>
 
-<img id="idLogo" src="{{ url_for('static', filename='favicon.png') }}" alt="SongTreasure Logo">
+<a href="https://github.com/simonroedig/SongTreasure" target="_blank">
+    <img id="idLogo" src="{{ url_for('static', filename='favicon.png') }}" alt="SongTreasure Logo">
+</a>
 
 <br>
 <hr id="hr1">

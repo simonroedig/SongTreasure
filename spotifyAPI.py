@@ -39,6 +39,7 @@ def get_env_vars():
         if not client_secret:
             raise ValueError("Missing Spotify Client Secret")
         log.info("Client ID and Client Secret found")
+        print(client_id, client_secret, redirect_uri)
         return client_id, client_secret, redirect_uri
     except Exception as e:
         log.error(f"Error: An error occurred while reading the environment variables: {e}")
