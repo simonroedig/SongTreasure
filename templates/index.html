@@ -267,6 +267,35 @@
         });
     }
 
+    /*
+
+    function checkTrackInPlaylist(playlistId, trackId, tracker) {
+        console.log('Checking if track already exists:', playlistId, trackId, tracker);
+        fetch('/ckeck_track_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ playlist_id: playlistId, track_id: trackId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var currentElement = document.getElementById(tracker);
+                if (currentElement) {
+                    currentElement.innerText = "✔ " + currentElement.innerText;
+                } else {
+                    console.error(`Element with ID ${tracker} not found.`);
+                }
+            } 
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    */
+
 
     var isLogged = "{{ isLoggedIn }}";
     console.log(isLogged);
@@ -433,6 +462,7 @@
                     {% endif %}
                 `;
             tracksContainer.appendChild(trackElement);
+
         });
     }
 

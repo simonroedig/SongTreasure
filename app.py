@@ -77,6 +77,8 @@ def logout():
 
 @app.route('/find_songs', methods=['POST'])
 def post_endpoint():
+    global user_playlists
+    
     data = request.json
     genre = data.get('genre')
     songs = data.get('songs')
@@ -131,7 +133,9 @@ def post_endpoint():
     # keep returning this, as it is the only way to get the data to the frontend
     return jsonify({
         'tracks': tracks_for_frontend,
-        'tracks_ammount': len(sorted_tracks_with_pop_stripped)
+        'tracks_ammount': len(sorted_tracks_with_pop_stripped),
+        'user_playlists': user_playlists
+        
     })
 
 
@@ -155,6 +159,23 @@ def add_to_playlist():
     except Exception as e:
         return jsonify(success=False, error=str(e))
     
+@app.route('/ckeck_track_playlist', methods=['POST'])
+def ckeck_track_playlist():
+    data = request.json
+    playlist_id = data['playlist_id']
+    track_id = data['track_id']
+
+    try:
+        # Check if the track is already in the playlist
+        playlist_tracks = sp.playlist_tracks(playlist_id)
+        track_ids = [item['track']['id'] for item in playlist_tracks['items']]
+        
+        if track_id in track_ids:
+            return jsonify(success=True)
+        else:
+            return jsonify(success=False)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
     
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)
