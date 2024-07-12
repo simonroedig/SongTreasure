@@ -111,7 +111,7 @@
                 <div class="TrackInfo5">
                     <div class="dropdown">
                         <button class="dropbtn" id="dropbtnPlaylist"><img class="playlistTrackIcon" src="{{ url_for('static', filename='add2.png') }}" alt="Add Icon"></button>
-                        <div class="dropdown-content" id="songsOptions">
+                        <div class="dropdown-content-playlist" id="playlistOptions">
                             <a class="selectItem">Select:</a>
                             {% if user_playlists %}
                                 {% for item in user_playlists %}
@@ -260,7 +260,7 @@
                     } else {
                         console.error(`Element with ID ${tracker} not found.`);
                     }
-                    alert('Track is already in playlist.');
+                    // alert('Track is already in playlist.');
                 }
             }
         })
@@ -269,8 +269,8 @@
         });
     }
 
-    /*
 
+    /*
     function checkTrackInPlaylist(playlistId, trackId, tracker) {
         console.log('Checking if track already exists:', playlistId, trackId, tracker);
         fetch('/ckeck_track_playlist', {
@@ -295,8 +295,9 @@
             console.error('Error:', error);
         });
     }
-
     */
+
+
 
 
     var isLogged = "{{ isLoggedIn }}";
@@ -345,6 +346,13 @@
     }
 
     findbtn.addEventListener('click', function () {
+        var audios = document.querySelectorAll('audio');
+        
+        audios.forEach(function(audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        });
+
         idTrackResults = document.getElementById('idTrackResults');
         idLoadingGif = document.getElementById('idLoadingGif');
         idTrackResultColumn = document.getElementById('idTrackResultColumn');
@@ -402,7 +410,7 @@
                         idHR3.style.visibility = 'visible';
 
                         updateTracks(data.tracks);
-                        console.log(data.tracks);
+                        console.log(data.user_playlists);
                         attachTrackEventListeners();
                     }
 
@@ -446,7 +454,7 @@
                         <div class="TrackInfo5">
                             <div class="dropdown">
                                 <button class="dropbtn" id="dropbtnPlaylist"><img class="playlistTrackIcon" src="{{ url_for('static', filename='add2.png') }}" alt="Add Icon"></button>
-                                <div class="dropdown-content" id="songsOptions">
+                                <div class="dropdown-content-playlist" id="playlistOptions">
                                     <a class="selectItem">Select:</a>
                                     {% if user_playlists %}
                                         {% for item in user_playlists %}
@@ -487,6 +495,10 @@
             });
 
             track.addEventListener('click', function () {
+                if (event.target.closest('.dropdown-content-playlist')) {
+                    return; // Do nothing if the click is from dropdown-content
+                }
+                
                 var index = this.dataset.index;
                 playAudio(index);
             });

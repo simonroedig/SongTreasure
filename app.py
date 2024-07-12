@@ -133,9 +133,7 @@ def post_endpoint():
     # keep returning this, as it is the only way to get the data to the frontend
     return jsonify({
         'tracks': tracks_for_frontend,
-        'tracks_ammount': len(sorted_tracks_with_pop_stripped),
-        'user_playlists': user_playlists
-        
+        'tracks_ammount': len(sorted_tracks_with_pop_stripped)
     })
 
 

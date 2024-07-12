@@ -69,8 +69,24 @@
 	bottom: 100%; /* Position the dropdown above the button */
 }
 
+.dropdown-content-playlist {
+	display: none;
+	position: absolute;
+	background-color: #f1f1f1;
+	min-width: 160px;
+	max-height: 200px; /* Adjust this value as needed */
+	overflow-y: auto;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	z-index: 10;
+	border-top-left-radius: 22px;
+	border-top-right-radius: 6px;
+	border-bottom-left-radius: 22px;
+	border-bottom-right-radius: 6px;
+	right: 0;
+}
+
 /* Links inside the dropdown */
-.dropdown-content a {
+.dropdown-content a, .dropdown-content-playlist a{
 	color: black;
 	padding: 12px 16px;
 	text-decoration: none;
@@ -83,7 +99,7 @@
 
 @media (hover: hover) {
 	/* Change color of dropdown links on hover */
-	.dropdown-content a:hover {
+	.dropdown-content a:hover, .dropdown-content-playlist a:hover{
 		background-color: #ddd;
 	}
 }
@@ -94,10 +110,18 @@
 	display: block;
 }
 
+.dropdown:hover .dropdown-content-playlist {
+	display: block;
+}
+
 
 
 .dropdown-content::-webkit-scrollbar {
     width: 8px; /* Adjust the width of the scrollbar */
+}
+
+.dropdown-content-playlist::-wekit-scrollbar {
+	width: 8px; /* Adjust the width of the scrollbar */
 }
 
 .dropdown-content::-webkit-scrollbar-track {
@@ -105,13 +129,26 @@
     border-radius: 10px; /* Rounded corners for the track */
 }
 
+.dropdown-content-playlist::-webkit-scrollbar-track {
+	background: #d4d4d4; /* Light grey track */
+	border-radius: 10px; /* Rounded corners for the track */
+}
+
 .dropdown-content::-webkit-scrollbar-thumb {
     background: #888; /* Darker grey scrollbar handle */
     border-radius: 10px; /* Rounded corners for the handle */
 }
 
+.dropdown-content-playlist::-webkit-scrollbar-thumb {
+	background: #888; /* Darker grey scrollbar handle */
+	border-radius: 10px; /* Rounded corners for the handle */
+}
+
 @media (hover: hover) {
 	.dropdown-content::-webkit-scrollbar-thumb:hover {
 	    background: #555; /* Even darker grey scrollbar handle on hover */
+	}
+	.dropdown-content-playlist::-webkit-scrollbar-thumb:hover {
+		background: #555; /* Even darker grey scrollbar handle on hover */
 	}
 }

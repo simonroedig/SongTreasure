@@ -84,6 +84,7 @@
 
     #idTrackResults {
         width: 100vw;
+        max-height: 150px;
     }
 
     .progress-container {

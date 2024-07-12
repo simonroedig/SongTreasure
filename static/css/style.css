@@ -6,7 +6,7 @@
     --scrollbrightest: #919191;
 }
 
-::-webkit-scrollbar {width: 1vw;}
+::-webkit-scrollbar {width: 0.5vw;}
 ::-webkit-scrollbar-track {background: var(--scrolldark); border-radius: 10px;}
 ::-webkit-scrollbar-thumb {background: var(--scrollbrighter); border-radius: 10px;}
 

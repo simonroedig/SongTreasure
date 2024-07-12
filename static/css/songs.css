@@ -6,7 +6,7 @@
     visibility: hidden;
     display: none;
     transition: 0.5s ease-in-out;
-    overflow: visible;
+    max-height: 280px;
 }
 
 #idTrackResultColumn {
