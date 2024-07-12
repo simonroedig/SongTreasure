@@ -1,0 +1,224 @@
+#idTrackResults {
+    overflow-y: auto; 
+    overflow-x: hidden;
+    padding: 10px; 
+    width: 70vw;
+    visibility: hidden;
+    display: none;
+    transition: 0.5s ease-in-out;
+    max-height: 280px;
+}
+
+#idTrackResultColumn {
+    width: 70vw;
+    margin-top: 40px;
+    padding: 20px;
+    display: none;
+    flex-direction: row;
+    visibility: hidden;
+    transition: 0.5s ease-in-out;
+}
+
+#hr3 {
+    width: 70vw;
+    margin: 1vh 0;
+    border: 1px solid #f1f1f15e;
+    border-radius: 50%;
+    visibility: hidden;
+    margin-top: 2vh;
+    transition: 2s ease;
+
+}
+
+.trackColumns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#idColumnTrackInfo0 {
+    width: 50px;
+    text-align: center;
+    margin-right: 15px;
+
+}
+
+#idColumnTrackInfo1 {
+    width: 632px;
+    text-align: center;
+}
+
+#idColumnTrackInfo2 {
+    width: 300px;
+    text-align: center;
+    color: #3af8ff;
+}
+
+#idColumnTrackInfo3 {
+    width: 300px;
+    text-align: center;
+}
+
+#idColumnTrackInfo4 {
+    width: 300px;
+    text-align: center;
+    padding-right: 10px;
+}
+
+#idColumnTrackInfo5 {
+    width: 300px;
+    text-align: center;
+    padding-right: 10px;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: pointer;
+    padding: 10px;
+}
+
+@media (hover: hover) {
+    .track:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transition: 0.3s;
+    }
+}
+
+.track-number {
+    display: flex;
+}
+
+.play-pause {
+    display: none;
+}
+
+#albumCover {
+    width: 70px;
+    height: 70px;
+    margin-right: 20px;
+    border-radius: 10px;
+}
+
+.track .title {
+    font-size: 16px;
+    font-weight: 600;
+}
+.track .artist {
+    font-size: 14px;
+    font-weight: 300;
+    color: gray;
+}
+.track .length {
+    font-size: 14px;
+}
+
+.track .releaseDate {
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+}
+
+
+
+.columnIcons {
+    width: 25px;
+}
+
+.TrackInfo1 {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.TrackInfo2 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+    text-align: center;
+}
+
+.predictedPopularity {
+    font-weight: 600;
+    color: #3af8ff;
+}
+
+.TrackInfo3 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.TrackInfo4 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.TrackInfo5 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.playlistTrackIcon {
+    width: 25px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .playlistTrackIcon:hover {
+        transform: scale(1.2);
+        transition: 0.2s ease;
+    }
+}
+
+.progress-container {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+}
+
+.progress-circle {
+    width: 50px;
+    height: 50px;
+    background: conic-gradient(transparent);
+    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.play-pause {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+    color: #ffffff;
+    text-shadow: 0 0 10px #00000094;
+}
+
+.reset-button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    padding: 5px;
+}
+
+@media (hover: hover) {
+    .reset-button:hover {
+        transform: scale(1.3);
+        transition: 0.2s ease-in-out;
+    }
+}
