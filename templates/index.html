@@ -49,17 +49,33 @@
 <div id="idTrackResultColumn">
 
 
-    <div id="idColumnTrackInfo0" class="trackColumns">#</div>
+    <div id="idColumnTrackInfo0" class="trackColumns">
+        <img class="columnIcons" id="idNumberIcon"src="{{ url_for('static', filename='number.png') }}" alt="Number Icon">
+    </div>
 
-    <div id="idColumnTrackInfo1" class="trackColumns">Title</div>
+    <div id="idColumnTrackInfo1" class="trackColumns">
+        <img class="columnIcons" id="idTitleIcon"src="{{ url_for('static', filename='title.png') }}" alt="Title Icon">
+    </div>
 
-    <div id="idColumnTrackInfo2" class="trackColumns">Treasure Score <img id="idTreasureIcon"
-                                                                          src="{{ url_for('static', filename='icon.png') }}"
-                                                                          alt="Treasure Icon"></div>
+    <div id="idColumnTrackInfo2" class="trackColumns">
+        <img class="columnIcons" id="idTreasureIcon" src="{{ url_for('static', filename='icon.png') }}" alt="Treasure Icon">
+    </div>
 
-    <div id="idColumnTrackInfo3" class="trackColumns">Release Date</div>
+    <div id="idColumnTrackInfo3" class="trackColumns">
+        <img class="columnIcons" id="idDateIcon"src="{{ url_for('static', filename='date.png') }}" alt="Date Icon">
+    </div>
 
-    <div id="idColumnTrackInfo4" class="trackColumns">Length</div>
+    <div id="idColumnTrackInfo4" class="trackColumns">
+        <img class="columnIcons" id="idTimeIcon"src="{{ url_for('static', filename='time.png') }}" alt="Time Icon">
+    </div>
+
+    {% if isLoggedIn %}
+        <div id="idColumnTrackInfo5" class="trackColumns">
+            <img class="columnIcons" id="idAddIcon"src="{{ url_for('static', filename='add.png') }}" alt="Add Icon">
+        </div>
+    {% else %}
+
+    {% endif %}
 
 
 </div>
@@ -75,7 +91,7 @@
                     <button class="play-pause" data-index="{{ loop.index0 }}">▶</button>
                 </div>
             </div>
-            <img src="{{ track.album_cover }}" alt="Album Cover">
+            <img id="albumCover" src="{{ track.album_cover }}" alt="Album Cover">
             <audio id="audio-{{ loop.index0 }}" src="{{ track.preview_url }}"></audio>
             <div class="TrackInfo1">
                 <div class="title">{{ track.title }}</div>
@@ -90,6 +106,27 @@
             <div class="TrackInfo4">
                 <div class="length">{{ track.length }}</div>
             </div>
+
+            {% if isLoggedIn %}
+                <div class="TrackInfo5">
+                    <div class="dropdown">
+                        <button class="dropbtn" id="dropbtnPlaylist"><img class="playlistTrackIcon" src="{{ url_for('static', filename='add2.png') }}" alt="Add Icon"></button>
+                        <div class="dropdown-content" id="songsOptions">
+                            <a class="selectItem">Select:</a>
+                            {% if user_playlists %}
+                                {% for item in user_playlists %}
+                                    <a href="#" id"tracker" onclick="addToPlaylist('{{ item['id'] }}', '{{ track.id }}', "tracker")">{{ item['name'] }}</a>
+                                {% endfor %}
+                            {% else %}
+                                <a href="#">No playlist found</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+
+            {% endif %}
+
         </div>
     {% endfor %}
 </div>
@@ -195,6 +232,42 @@
 </footer>
 
 <script>
+    function addToPlaylist(playlistId, trackId, tracker) {
+        console.log('Adding track to playlist:', playlistId, trackId, tracker);
+        fetch('/add_to_playlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ playlist_id: playlistId, track_id: trackId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var currentElement = document.getElementById(tracker);
+                if (currentElement) {
+                    currentElement.innerText = "✔ " + currentElement.innerText;
+                } else {
+                    console.error(`Element with ID ${tracker} not found.`);
+                }
+                
+            } else {
+                if (data.error === 'track_in_playlist_already') {
+                    var currentElement = document.getElementById(tracker);
+                    if (currentElement) {
+                        currentElement.innerText = currentElement.innerText.replace(/✔\s?/g, '');
+                    } else {
+                        console.error(`Element with ID ${tracker} not found.`);
+                    }
+                }
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+
     var isLogged = "{{ isLoggedIn }}";
     console.log(isLogged);
 
@@ -298,6 +371,7 @@
                         idHR3.style.visibility = 'visible';
 
                         updateTracks(data.tracks);
+                        console.log(data.tracks);
                         attachTrackEventListeners();
                     }
 
@@ -313,6 +387,7 @@
         tracksContainer.innerHTML = '';
         tracks.forEach((track, index) => {
             var trackElement = document.createElement('div');
+            var tracker = "playlist" + index;
             trackElement.className = 'track';
             trackElement.dataset.index = index;
             trackElement.innerHTML = `
@@ -322,7 +397,7 @@
                             <button class="play-pause" data-index="${index}">▶</button>
                         </div>
                     </div>
-                    <img src="${track.album_cover}" alt="Album Cover">
+                    <img id="albumCover" src="${track.album_cover}" alt="Album Cover">
                     <audio id="audio-${index}" src="${track.preview_url}"></audio>
                     <div class="TrackInfo1">
                         <div class="title">${track.title}</div>
@@ -337,6 +412,25 @@
                     <div class="TrackInfo4">
                         <div class="length">${track.length}</div>
                     </div>
+                    {% if isLoggedIn %}
+                        <div class="TrackInfo5">
+                            <div class="dropdown">
+                                <button class="dropbtn" id="dropbtnPlaylist"><img class="playlistTrackIcon" src="{{ url_for('static', filename='add2.png') }}" alt="Add Icon"></button>
+                                <div class="dropdown-content" id="songsOptions">
+                                    <a class="selectItem">Select:</a>
+                                    {% if user_playlists %}
+                                        {% for item in user_playlists %}
+                                            <a href="#" id="{{ item['id'] }}" onclick="addToPlaylist('{{ item['id'] }}', '${track.id}', '{{ item['id'] }}')">{{ item['name'] }}</a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <a href="#">No playlist found</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+
+                    {% endif %}
                 `;
             tracksContainer.appendChild(trackElement);
         });
@@ -427,7 +521,7 @@
         var progress = (currentTime / duration) * 100;
 
         if (progress > 0) {
-            progressCircle.style.background = `conic-gradient(#1DB954 ${progress}%, transparent ${progress}%)`;
+            progressCircle.style.background = `conic-gradient(#3af8ff ${progress}%, transparent ${progress}%)`;
         } else {
             progressCircle.style.background = 'transparent';
         }

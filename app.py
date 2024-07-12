@@ -5,6 +5,7 @@ import numpy as np
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
+import json
 
 load_dotenv()
 app = Flask(__name__)
@@ -14,6 +15,7 @@ sp_oauth, cache_handler, sp = spotifyAPI.init_oauth()
 tracks = []
 tracks_for_frontend = []
 isLoggedIn = False
+user_playlists = []
 
 @app.route('/favicon.ico')
 def favicon():
@@ -24,22 +26,34 @@ def index():
     global isLoggedIn
     global tracks
     global tracks_for_frontend
+    global user_playlists
 
     profile_pic_url = None
     if isLoggedIn:
         try:
             user_info = sp.current_user()
             profile_pic_url = user_info['images'][0]['url'] if user_info['images'] else None
+            
+            user_playlists = sp.current_user_playlists()['items']
+            user_playlists = [{'name': playlist['name'], 'id': playlist['id']} for playlist in user_playlists]
+            
+            print(user_playlists)
+
         except:
             profile_pic_url = None
+            
+            user_playlists = []
+            print("ERROR: Could not get user info")
 
+    print(user_playlists)
     return render_template(
         'index.html',
         isLoggedIn=isLoggedIn,
         tracks=tracks_for_frontend,
         tracks_ammount=len(tracks),
         current_year=datetime.datetime.now().year,
-        profile_pic_url=profile_pic_url
+        profile_pic_url=profile_pic_url,
+        user_playlists=user_playlists
     )
 
 
@@ -75,7 +89,7 @@ def post_endpoint():
     
     songs = int(songs)
     response = (genre, songs)
-    print(response)
+    # print(response)
     
     global tracks
     
@@ -89,30 +103,30 @@ def post_endpoint():
         
         # this give us a dictionary with the relevant audio features
         track_relevant_metadata = spotifyAPI.filter_relevant_audio_features(track_metadata)
-        print(track_relevant_metadata)
+        # print(track_relevant_metadata)
         
         track_metadata_df = spotifyAPI.create_df_from_track_metadata(track_relevant_metadata)
         
         predicted_popularity = (spotifyAPI.predict_popularity(track_metadata_df))[0][0]
         track['predicted_popularity'] = int(predicted_popularity)
         
-        print("-------------------------------------------------")
-        print(predicted_popularity)
-        print("-------------------------------------------------")
+        # print("-------------------------------------------------")
+        # print(predicted_popularity)
+        # print("-------------------------------------------------")
         
         
     sorted_tracks_with_pop = sorted(newest_tracks, key=lambda x: x['predicted_popularity'], reverse=True)
     sorted_tracks_with_pop_stripped = sorted_tracks_with_pop[:songs]
     
-    print(sorted_tracks_with_pop_stripped)
+    # print(sorted_tracks_with_pop_stripped)
 
     
     global tracks_for_frontend
     tracks_for_frontend = spotifyAPI.get_track_information_to_display_in_frontend(sorted_tracks_with_pop_stripped)
     
-    #print(tracks)
-    print('_________________________________________')
-    #print(tracks_for_frontend)
+    # print(tracks)
+    # print('_________________________________________')
+    # print(tracks_for_frontend)
     
     # keep returning this, as it is the only way to get the data to the frontend
     return jsonify({
@@ -120,5 +134,27 @@ def post_endpoint():
         'tracks_ammount': len(sorted_tracks_with_pop_stripped)
     })
 
+
+@app.route('/add_to_playlist', methods=['POST'])
+def add_to_playlist():
+    data = request.json
+    playlist_id = data['playlist_id']
+    track_id = data['track_id']
+
+    try:
+        # Check if the track is already in the playlist
+        playlist_tracks = sp.playlist_tracks(playlist_id)
+        track_ids = [item['track']['id'] for item in playlist_tracks['items']]
+        
+        if track_id in track_ids:
+            return jsonify(success=False, error='track_in_playlist_already')
+
+        # Add the track to the playlist
+        sp.playlist_add_items(playlist_id, [track_id])
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
+    
+    
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8080)

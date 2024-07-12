@@ -1,10 +1,12 @@
 #idTrackResults {
     overflow-y: auto; 
+    overflow-x: hidden;
     padding: 10px; 
     width: 70vw;
     visibility: hidden;
     display: none;
     transition: 0.5s ease-in-out;
+    overflow: visible;
 }
 
 #idTrackResultColumn {
@@ -42,7 +44,7 @@
 }
 
 #idColumnTrackInfo1 {
-    width: 590px;
+    width: 632px;
     text-align: center;
 }
 
@@ -61,7 +63,12 @@
     width: 300px;
     text-align: center;
     padding-right: 10px;
+}
 
+#idColumnTrackInfo5 {
+    width: 300px;
+    text-align: center;
+    padding-right: 10px;
 }
 
 .track {
@@ -88,7 +95,7 @@
     display: none;
 }
 
-.track img {
+#albumCover {
     width: 70px;
     height: 70px;
     margin-right: 20px;
@@ -113,8 +120,10 @@
     color: rgb(255, 255, 255);
 }
 
-#idTreasureIcon {
-    width: 30px;
+
+
+.columnIcons {
+    width: 25px;
 }
 
 .TrackInfo1 {
@@ -150,6 +159,26 @@
     align-items: center;
 }
 
+.TrackInfo5 {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    align-items: center;
+}
+
+.playlistTrackIcon {
+    width: 25px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .playlistTrackIcon:hover {
+        transform: scale(1.2);
+        transition: 0.2s ease;
+    }
+}
+
 .progress-container {
     position: relative;
     width: 50px;
@@ -175,6 +204,7 @@
     cursor: pointer;
     outline: none;
     color: #ffffff;
+    text-shadow: 0 0 10px #00000094;
 }
 
 .reset-button {

@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 import pandas as pd
 import pickle
 import numpy as np
-
+import json
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
@@ -76,7 +76,27 @@ def store_token(sp_oauth):
     return redirect('/')
 
 
-def get_newest_tracks(genre, limit=50, timeframe="day"):
+def get_newest_tracks(genre, limit=50):
+    client_id, client_secret, redirect_uri = get_env_vars()
+    sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+    today = datetime.date.today()
+    query = f'genre:{genre} year:{today.year}'
+    results = sp.search(q=query, type='track', limit=50, market='US')
+    tracks = results['tracks']['items']
+
+    # Fetch additional tracks if necessary
+    while len(tracks) < limit:
+        results = sp.search(q=query, type='track', limit=50, market='US', offset=len(tracks))
+        tracks.extend(results['tracks']['items'])
+        if len(results['tracks']['items']) == 0:
+            break
+
+    # Sort the tracks by release date (newest first)
+    tracks_sorted = sorted(tracks, key=lambda x: x['album']['release_date'], reverse=True)
+    return tracks_sorted[:limit]
+
+
+def get_newest_tracks_final(genre, limit=50, timeframe="day"):
     print(f"Fetching {limit} random tracks for genre: {genre} within timeframe: {timeframe}")
     client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(
@@ -158,6 +178,7 @@ def get_track_information_to_display_in_frontend(track_list):
             'popularity': track['predicted_popularity'],
             'release_date': formatted_release_date,
             'album': track['album']['name'] if 'name' in track['album'] else 'Album not available',
+            'id': track['id']
         }
         track_info.append(track_details)
     
@@ -176,6 +197,7 @@ def predict_popularity(metadata):
 def get_audio_features(track_ids):
     client_id, client_secret, redirect_uri = get_env_vars()
     sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+    
     
     return sp.audio_features(tracks=track_ids)
 
@@ -237,6 +259,4 @@ def print_track_metadata(track, audio_features, genre):
     print(f"Time Signature: {features.get('time_signature', 'N/A')}")
     print("-" * 50)
     """
-
-
 

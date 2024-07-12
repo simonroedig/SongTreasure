@@ -44,6 +44,81 @@
 
     .loader {
         height: 20px;
-      }
+    }
+
+
+
+    .track-number {
+        font-size: 12px;
+    }
+    #albumCover {
+        width: 40px;
+        height: 40px;
+        border-radius: 5px;
+    }
+
+    .track .title {
+        font-size: 12px;
+    }
+    .track .artist {
+        font-size: 10px;
+    }
+
+    .track .length {
+        font-size: 10px;
+    }
+    .track .releaseDate {
+        font-size: 10px;
+    }
+
+    .predictedPopularity {
+        font-size: 12px;
+    }
+
+    #idTrackResultColumn {
+        font-size: 12px;
+        width: 96vw;
+        margin-top: 20px;
+        padding-bottom: 10px;
+    }
+
+    #idTrackResults {
+        width: 100vw;
+    }
+
+    .progress-container {
+        margin-right: 10px;
+        width: 30px;
+        height: 30px;
+    }
+    .progress-circle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .play-pause {
+        font-size: 14px;
+    }
+
+
+    .columnIcons {
+        width: 15px;
+    }
+
+    #idColumnTrackInfo1 {
+        width: 900px;
+    }
+
+    .playlistTrackIcon {
+        width: 17px;
+        margin-right: 10px;
+    }
+
+    #idColumnTrackInfo5 {
+        padding-right: 0px;
+        margin-left: -10px;
+    }
+
+
 }
   

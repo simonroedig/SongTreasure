@@ -6,7 +6,7 @@
     --scrollbrightest: #919191;
 }
 
-::-webkit-scrollbar {width: 10px;}
+::-webkit-scrollbar {width: 1vw;}
 ::-webkit-scrollbar-track {background: var(--scrolldark); border-radius: 10px;}
 ::-webkit-scrollbar-thumb {background: var(--scrollbrighter); border-radius: 10px;}
 
@@ -117,7 +117,7 @@ a {
 	font-weight: 600;
 	text-align: center;
     border: 1px solid #ff4a4a;
-    margin-bottom: 10vh;
+    margin-bottom: 5vh;
     background-color: transparent;
     transition: 0.2s ease;
 }
