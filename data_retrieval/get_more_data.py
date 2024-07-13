@@ -95,6 +95,7 @@ spotify_client_and_secrets_list = [
 ]
 
 RATE_LIMIT_RETRY_DELAY = 30 * 60  # 30 minutes
+GET_MOST_POPULAR_SONGS = False
 
 # List of random genres to choose from
 genres = ["acoustic", "afrobeat", "alt-rock", "alternative", "ambient", "anime", "black-metal", "bluegrass", "blues",
@@ -121,15 +122,15 @@ relevant_keys = {
 
 
 # Function to handle the search request with retries
-def perform_search(year_span, max_retries, n, sp, popularity):
+def perform_search(year_span, max_retries, n, sp):
     attempts = 0
     max_offset = 800  # Limit offset to a reasonable number
     while attempts < max_retries:
         offset = random.randint(0, max_offset)
         try:
-            #logging.warning(f"Spotify Request: Searching for tracks from {year_span} at offset {offset}...")
-            #random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset)
-            random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset, popularity=popularity)
+            # logging.warning(f"Spotify Request: Searching for tracks from {year_span} at offset {offset}...")
+            # random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset)
+            random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset)
             if not random_tracks['tracks']['items']:
                 # If no tracks are found, reduce the offset or handle appropriately
                 print(f"No tracks found at offset {offset} for year {year_span}. Reducing offset.")
@@ -152,6 +153,39 @@ def perform_search(year_span, max_retries, n, sp, popularity):
             print(f"An error occurred: {e}")
             raise
         attempts += 1
+    print("Max retries exceeded.")
+    return None
+
+
+def perform_recommendations(seed_genres, max_retries, n, sp, target_popularity):
+    attempts = 0
+    # get random 5 genres
+    seed_genres = random.sample(seed_genres, 5)
+
+    while attempts < max_retries:
+        try:
+            # Logging the attempt (uncomment if needed)
+            print(f"Spotify Request: Getting recommendations with target popularity {target_popularity}...")
+            recommendations = sp.recommendations(seed_genres=seed_genres, limit=n, target_popularity=target_popularity)
+            print(f'Successfully fetched recommendations with target popularity {target_popularity}.')
+            if not recommendations['tracks']:
+                print(f"No recommendations found with target popularity {target_popularity}. Retrying...")
+                attempts += 1
+                continue
+
+            return recommendations
+        except spotipy.exceptions.SpotifyException as e:
+            if e.http_status == 429:
+                print(f"Rate limited. Retrying after {RATE_LIMIT_RETRY_DELAY} seconds.")
+                time.sleep(RATE_LIMIT_RETRY_DELAY)
+            else:
+                print(f"Failed to fetch recommendations: {e}")
+                raise
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise
+        attempts += 1
+
     print("Max retries exceeded.")
     return None
 
@@ -206,7 +240,7 @@ def get_features(track_ids, access_token, max_retries=5):
         "ids": ",".join(track_ids)
     }
 
-    #logging.warning(f"Spotify Request: Fetching audio features for {len(track_ids)} tracks...")
+    # logging.warning(f"Spotify Request: Fetching audio features for {len(track_ids)} tracks...")
 
     for attempt in range(max_retries):
         response = requests.get(url, headers=headers, params=params)
@@ -225,8 +259,15 @@ def get_features(track_ids, access_token, max_retries=5):
     return None
 
 
+def get_100_of_most_popular_songs_from_dataset(offset=0):
+    # Load the dataset
+    df = pd.read_csv('datasets/random_songs.csv')
+    # Get 100 songs from the dataset with offset as array
+    return df.iloc[offset:offset + 100].to_dict(orient='records')
+
+
 # Function to get random tracks with their features
-def get_random_tracks_with_features(n, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, popularity):
+def get_random_tracks_with_features(n, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, target_popularity, offset=0):
     # Authenticate
     auth_manager = SpotifyClientCredentials(client_id=SPOTIPY_CLIENT_ID, client_secret=SPOTIPY_CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
@@ -237,9 +278,17 @@ def get_random_tracks_with_features(n, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
     year_span = random.randint(1995, 2024)
 
     # Perform the search request
-    results = perform_search(year_span, max_retries, n, sp, popularity)
+    results = perform_search(year_span, max_retries, n, sp)
+    # if GET_MOST_POPULAR_SONGS:
+    #     results = get_100_of_most_popular_songs_from_dataset(offset=offset)
+    # else:
+    #     results = perform_recommendations(genres, max_retries, n, sp, target_popularity)
+
     if results:
-        tracks.extend(results['tracks']['items'])
+        if GET_MOST_POPULAR_SONGS:
+            tracks.extend(results)
+        else:
+            tracks.extend(results['tracks']['items'])
         tracks = tracks[:n]
 
         # Extract track IDs
@@ -296,13 +345,15 @@ def main():
 
     # Create an iterator that cycles through the client data
     client_cycle = itertools.cycle(spotify_client_and_secrets_list)
+    next(client_cycle)
+    # Create an empty list to store the random tracks with features
     random_tracks_with_features = []
 
-    milestone = len(pd.read_csv('random_songs.csv')) + 1000
+    milestone = len(pd.read_csv('datasets/random_songs.csv')) + 1000
 
-    time.sleep(3 * 60 * 60)  # Sleep for 3 hours (to avoid rate limiting
-
-    while len(pd.read_csv('random_songs.csv')) < total_songs_num:
+    # time.sleep(3 * 60 * 60)  # Sleep for 3 hours (to avoid rate limiting
+    offset = 0
+    while len(pd.read_csv('datasets/random_songs.csv')) < total_songs_num:
         time.sleep(1)
 
         num_songs = min(max_songs_per_request, total_songs_num - len(random_tracks_with_features))
@@ -314,16 +365,18 @@ def main():
         SPOTIPY_CLIENT_SECRET = current_client['client_secret']
         app_name = current_client['app_name']
 
-        print(f'Using client ID: {SPOTIPY_CLIENT_ID} and Secret: {SPOTIPY_CLIENT_SECRET} for {app_name}')
+        #print(f'Using client ID: {SPOTIPY_CLIENT_ID} and Secret: {SPOTIPY_CLIENT_SECRET} for {app_name}')
 
-        df = pd.read_csv('random_songs.csv')
+        df = pd.read_csv('datasets/random_songs.csv')
 
         # Check which popularity is the least common, and get songs with that popularity
-        popularity = df['popularity'].value_counts().idxmin()
+        target_popularity = df['popularity'].value_counts().idxmin()
 
-        print(f"Getting {num_songs} songs with popularity {popularity} because we only have this many songs with this popularity: {df['popularity'].value_counts().min()}")
+        #print(f"Getting {num_songs} songs with popularity {target_popularity} because we only have this many songs with this popularity: {df['popularity'].value_counts().min()}")
 
-        new_tracks = get_random_tracks_with_features(num_songs, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, popularity)
+        new_tracks = get_random_tracks_with_features(num_songs, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
+                                                     target_popularity, offset=offset)
+        offset += max_songs_per_request
 
         random_tracks_with_features.extend(new_tracks)
 
@@ -337,18 +390,20 @@ def main():
         df = pd.DataFrame(data)
 
         # Append to CSV, create if not exists
-        with open('random_songs.csv', 'a') as f:
+        with open('datasets/random_songs.csv', 'a') as f:
+            df.to_csv(f, index=False, header=f.tell() == 0)
+        with open('datasets/random_songs_recommendations.csv', 'a') as f:
             df.to_csv(f, index=False, header=f.tell() == 0)
 
-        #print(f"Added {num_songs} songs to 'random_songs.csv'")
-        number_of_songs = len(pd.read_csv('random_songs.csv'))
+        # print(f"Added {num_songs} songs to 'random_songs.csv'")
+        number_of_songs = len(pd.read_csv('datasets/random_songs.csv'))
         # Print how many songs in csv
         if number_of_songs >= milestone:
             formatted_number_of_songs = "{:,}".format(number_of_songs)
             print(f"Total songs in 'random_songs.csv': {formatted_number_of_songs}")
             milestone += 500
 
-        #print(f"Total songs in 'random_songs.csv': {len(pd.read_csv('random_songs.csv'))}")
+        #print(f"Total songs in 'random_songs.csv': {len(pd.read_csv('datasets/random_songs.csv'))}")
 
     print("CSV file 'random_songs.csv' has been updated successfully.")
     print(f"Total time elapsed: {round(time.time() - start_time, 2)}s")
@@ -356,5 +411,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
