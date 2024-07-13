@@ -1,11 +1,9 @@
-# Python 3.9.13
+# Python 3.11.0
 import os
 from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
-import numpy as np
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
-import json
 
 load_dotenv()
 app = Flask(__name__)

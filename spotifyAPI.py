@@ -13,7 +13,6 @@ from dotenv import load_dotenv
 import pandas as pd
 import pickle
 import numpy as np
-import json
 
 # Set default encoding to UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
