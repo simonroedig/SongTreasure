@@ -35,7 +35,6 @@ def index():
             user_playlists = sp.current_user_playlists()['items']
             user_playlists = [{'name': playlist['name'], 'id': playlist['id']} for playlist in user_playlists]
             
-            print(user_playlists)
 
         except:
             profile_pic_url = None
