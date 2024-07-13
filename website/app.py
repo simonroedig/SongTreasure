@@ -175,3 +175,5 @@ def ckeck_track_playlist():
 if __name__ == '__main__':
     if os.getenv('MODE') == 'DEV':
         app.run(debug=True, host='0.0.0.0', port=8080)
+    else:
+        app.run(debug=True)
