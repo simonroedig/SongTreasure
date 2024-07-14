@@ -42,7 +42,7 @@ def index():
             user_playlists = []
             print("ERROR: Could not get user info")
 
-    print(user_playlists)
+
     return render_template(
         'index.html',
         isLoggedIn=isLoggedIn,
