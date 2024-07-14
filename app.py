@@ -4,6 +4,7 @@ from flask import Flask, jsonify, render_template, request, redirect, session, s
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
+import random
 
 load_dotenv()
 app = Flask(__name__)
@@ -116,6 +117,18 @@ def post_endpoint():
         
     sorted_tracks_with_pop = sorted(newest_tracks, key=lambda x: x['predicted_popularity'], reverse=True)
     sorted_tracks_with_pop_stripped = sorted_tracks_with_pop[:songs]
+    
+    # Randomly assign the highest predicted popularity within 80 to 100 to display a better SongTreasure score for the user
+    highest_predicted_popularity = sorted_tracks_with_pop_stripped[0]['predicted_popularity']
+    new_highest_popularity = random.randint(80, 100)
+
+    difference = new_highest_popularity - highest_predicted_popularity
+
+    for track in sorted_tracks_with_pop_stripped:
+        track['predicted_popularity'] += difference
+        track['predicted_popularity'] = max(0, min(track['predicted_popularity'], 100))
+        
+        track['predicted_popularity'] = f"{track['predicted_popularity']}%"
     
     # print(sorted_tracks_with_pop_stripped)
 
