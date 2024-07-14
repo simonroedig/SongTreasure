@@ -1,11 +1,9 @@
-# Python 3.9.13
+# Python 3.11.0
 import os
 from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
-import numpy as np
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
-import json
 
 load_dotenv()
 app = Flask(__name__)
@@ -37,7 +35,6 @@ def index():
             user_playlists = sp.current_user_playlists()['items']
             user_playlists = [{'name': playlist['name'], 'id': playlist['id']} for playlist in user_playlists]
             
-            print(user_playlists)
 
         except:
             profile_pic_url = None
@@ -45,7 +42,7 @@ def index():
             user_playlists = []
             print("ERROR: Could not get user info")
 
-    print(user_playlists)
+
     return render_template(
         'index.html',
         isLoggedIn=isLoggedIn,
@@ -176,4 +173,8 @@ def ckeck_track_playlist():
         return jsonify(success=False, error=str(e))
     
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8080)
+    if os.getenv('MODE') == 'DEV':
+        app.run(debug=True, host='0.0.0.0', port=8080)
+    else:
+        port = int(os.environ.get('PORT', 5000))
+        app.run(debug=True, port=port)
