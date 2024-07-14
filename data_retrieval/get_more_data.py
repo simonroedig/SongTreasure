@@ -124,13 +124,15 @@ relevant_keys = {
 # Function to handle the search request with retries
 def perform_search(year_span, max_retries, n, sp):
     attempts = 0
-    max_offset = 800  # Limit offset to a reasonable number
+    max_offset = 300  # Limit offset to a reasonable number
     while attempts < max_retries:
         offset = random.randint(0, max_offset)
+        random_genre = random.sample(genres, 1)
         try:
             # logging.warning(f"Spotify Request: Searching for tracks from {year_span} at offset {offset}...")
             # random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset)
-            random_tracks = sp.search(q=f'year:{year_span}', type='track', limit=n, offset=offset)
+            query = f'year:{year_span} genre:"{random_genre}"'
+            random_tracks = sp.search(q=query, type='track', limit=n, offset=offset)
             if not random_tracks['tracks']['items']:
                 # If no tracks are found, reduce the offset or handle appropriately
                 print(f"No tracks found at offset {offset} for year {year_span}. Reducing offset.")
@@ -340,7 +342,7 @@ def get_random_tracks_with_features(n, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,
 def main():
     start_time = time.time()
     # Fetch 10 random songs
-    total_songs_num = 1_000_000
+    total_songs_num = 2_000_000
     max_songs_per_request = 50
 
     # Create an iterator that cycles through the client data
