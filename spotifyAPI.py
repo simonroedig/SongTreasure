@@ -119,13 +119,11 @@ def get_newest_tracks_final(genre, limit=50, timeframe="day"):
     batch_size = 50
     batches_needed = (max_tracks_to_fetch + batch_size - 1) // batch_size
 
-    try:
-        for i in range(batches_needed):
-            offset = random.randint(0, 1000)
+    for i in range(batches_needed):
+        offset = random.randint(0, 999)
+        try:
             results = sp.search(q=query, type='track', limit=batch_size, market='US', offset=offset)
             new_tracks = results['tracks']['items']
-
-
             for track in new_tracks:
                 if track['id'] not in seen_track_ids:
                     total_tracks.append(track)
@@ -133,12 +131,12 @@ def get_newest_tracks_final(genre, limit=50, timeframe="day"):
 
             print(
                 f"Batch {i + 1}: Retrieved {len(new_tracks)} tracks, {len(total_tracks)} unique so far with offset {offset}")
+        except spotipy.SpotifyException as e:
+            print(f"Error in batch {i + 1} Spotify API call: {e}")
 
-            if len(total_tracks) >= max_tracks_to_fetch:
-                print("Reached maximum desired number of tracks.")
-                break
-    except spotipy.SpotifyException as e:
-        print(f"Error in Spotify API call: {e}")
+        if len(total_tracks) >= max_tracks_to_fetch:
+            print("Reached maximum desired number of tracks.")
+            break
 
     random.shuffle(total_tracks)
     selected_tracks = total_tracks[:limit]

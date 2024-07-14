@@ -93,7 +93,7 @@ def post_endpoint():
     global tracks
     
     requested_track_ammount = songs + 10
-    newest_tracks = spotifyAPI.get_newest_tracks(genre, requested_track_ammount)
+    newest_tracks = spotifyAPI.get_newest_tracks_final(genre, requested_track_ammount)
         
     for track in newest_tracks:
         current_track_id = track['id']
