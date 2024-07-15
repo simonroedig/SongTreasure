@@ -5,6 +5,8 @@ import spotifyAPI
 from dotenv import load_dotenv
 import datetime
 import random
+from spotipy.exceptions import SpotifyException
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -57,12 +59,22 @@ def index():
 
 @app.get('/login')
 def login():
-    global isLoggedIn
-    isLoggedIn = True
     return spotifyAPI.validate_token(sp_oauth, cache_handler)
 
 @app.route('/callback')
 def callback():
+    global isLoggedIn
+    try:
+        user_info = sp.current_user()
+    except SpotifyException as e:
+        if e.http_status == 403:
+            return "Login Denied: You are not registered as a developer for this app.", 403
+
+    error = request.args.get('error')
+    if error:
+        isLoggedIn = False
+        return redirect('/')
+    isLoggedIn = True
     return spotifyAPI.store_token(sp_oauth)
 
 @app.route('/logout')
