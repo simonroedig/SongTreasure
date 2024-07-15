@@ -4,7 +4,7 @@ import sys
 import logging as log
 from flask import redirect, request, session
 import datetime
-import keras
+import tflite_runtime.interpreter as tflite # Alternative, falls kein tflite-runtime installiert ist: import tensorflow.lite as tflite
 import spotipy
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -182,12 +182,19 @@ def get_track_information_to_display_in_frontend(track_list):
     return track_info
 
 def load_model():
-    model = keras.models.load_model('model.keras')
-    return model
+    interpreter = tflite.Interpreter(model_path="model.tflite")
+    interpreter.allocate_tensors()
+    return interpreter
 
 def predict_popularity(metadata):
-    model = load_model()
-    prediction = model.predict(metadata)
+    interpreter = load_model()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    input_data = np.array(metadata, dtype=np.float32)
+    interpreter.set_tensor(input_details[0]['index'], input_data)
+    interpreter.invoke()
+    prediction = interpreter.get_tensor(output_details[0]['index'])
     prediction = np.clip(prediction, 0, 100)
     return prediction
 
