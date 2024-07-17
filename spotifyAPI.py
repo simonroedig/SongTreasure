@@ -4,7 +4,8 @@ import sys
 import logging as log
 from flask import redirect, request, session
 import datetime
-import tflite_runtime.interpreter as tflite # Alternative, falls kein tflite-runtime installiert ist: import tensorflow.lite as tflite
+#import tflite_runtime.interpreter as tflite # Alternative, falls kein tflite-runtime installiert ist: import tensorflow.lite as tflite
+import tensorflow.lite as tflite
 import spotipy
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
