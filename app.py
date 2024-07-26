@@ -4,6 +4,9 @@ from flask import Flask, jsonify, render_template, request, redirect, session, s
 import spotifyAPI
 from dotenv import load_dotenv
 import datetime
+import random
+from spotipy.exceptions import SpotifyException
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -42,7 +45,7 @@ def index():
             user_playlists = []
             print("ERROR: Could not get user info")
 
-
+    print(user_playlists)
     return render_template(
         'index.html',
         isLoggedIn=isLoggedIn,
@@ -56,12 +59,22 @@ def index():
 
 @app.get('/login')
 def login():
-    global isLoggedIn
-    isLoggedIn = True
     return spotifyAPI.validate_token(sp_oauth, cache_handler)
 
 @app.route('/callback')
 def callback():
+    global isLoggedIn
+    try:
+        user_info = sp.current_user()
+    except SpotifyException as e:
+        if e.http_status == 403:
+            return "Login Denied: You are not registered as a developer for this app.", 403
+
+    error = request.args.get('error')
+    if error:
+        isLoggedIn = False
+        return redirect('/')
+    isLoggedIn = True
     return spotifyAPI.store_token(sp_oauth)
 
 @app.route('/logout')
@@ -93,7 +106,7 @@ def post_endpoint():
     global tracks
     
     requested_track_ammount = songs + 10
-    newest_tracks = spotifyAPI.get_newest_tracks(genre, requested_track_ammount)
+    newest_tracks = spotifyAPI.get_newest_tracks_final(genre, requested_track_ammount)
         
     for track in newest_tracks:
         current_track_id = track['id']
@@ -116,6 +129,18 @@ def post_endpoint():
         
     sorted_tracks_with_pop = sorted(newest_tracks, key=lambda x: x['predicted_popularity'], reverse=True)
     sorted_tracks_with_pop_stripped = sorted_tracks_with_pop[:songs]
+    
+    # Randomly assign the highest predicted popularity within 80 to 100 to display a better SongTreasure score for the user
+    highest_predicted_popularity = sorted_tracks_with_pop_stripped[0]['predicted_popularity']
+    new_highest_popularity = random.randint(80, 100)
+
+    difference = new_highest_popularity - highest_predicted_popularity
+
+    for track in sorted_tracks_with_pop_stripped:
+        track['predicted_popularity'] += difference
+        track['predicted_popularity'] = max(0, min(track['predicted_popularity'], 100))
+        
+        track['predicted_popularity'] = f"{track['predicted_popularity']}%"
     
     # print(sorted_tracks_with_pop_stripped)
 
@@ -173,8 +198,4 @@ def ckeck_track_playlist():
         return jsonify(success=False, error=str(e))
     
 if __name__ == '__main__':
-    if os.getenv('MODE') == 'DEV':
-        app.run(debug=True, host='0.0.0.0', port=8080)
-    else:
-        port = int(os.environ.get('PORT', 5000))
-        app.run(debug=True, port=port)
+    app.run(debug=True, host='0.0.0.0', port=8080)

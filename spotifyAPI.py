@@ -4,7 +4,8 @@ import sys
 import logging as log
 from flask import redirect, request, session
 import datetime
-import keras
+#import tflite_runtime.interpreter as tflite # Alternative, falls kein tflite-runtime installiert ist: import tensorflow.lite as tflite
+import tensorflow.lite as tflite
 import spotipy
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
@@ -119,13 +120,11 @@ def get_newest_tracks_final(genre, limit=50, timeframe="day"):
     batch_size = 50
     batches_needed = (max_tracks_to_fetch + batch_size - 1) // batch_size
 
-    try:
-        for i in range(batches_needed):
-            offset = random.randint(0, 1000)
+    for i in range(batches_needed):
+        offset = random.randint(0, 999)
+        try:
             results = sp.search(q=query, type='track', limit=batch_size, market='US', offset=offset)
             new_tracks = results['tracks']['items']
-
-
             for track in new_tracks:
                 if track['id'] not in seen_track_ids:
                     total_tracks.append(track)
@@ -133,12 +132,12 @@ def get_newest_tracks_final(genre, limit=50, timeframe="day"):
 
             print(
                 f"Batch {i + 1}: Retrieved {len(new_tracks)} tracks, {len(total_tracks)} unique so far with offset {offset}")
+        except spotipy.SpotifyException as e:
+            print(f"Error in batch {i + 1} Spotify API call: {e}")
 
-            if len(total_tracks) >= max_tracks_to_fetch:
-                print("Reached maximum desired number of tracks.")
-                break
-    except spotipy.SpotifyException as e:
-        print(f"Error in Spotify API call: {e}")
+        if len(total_tracks) >= max_tracks_to_fetch:
+            print("Reached maximum desired number of tracks.")
+            break
 
     random.shuffle(total_tracks)
     selected_tracks = total_tracks[:limit]
@@ -184,12 +183,19 @@ def get_track_information_to_display_in_frontend(track_list):
     return track_info
 
 def load_model():
-    model = keras.models.load_model('model.keras')
-    return model
+    interpreter = tflite.Interpreter(model_path="model.tflite")
+    interpreter.allocate_tensors()
+    return interpreter
 
 def predict_popularity(metadata):
-    model = load_model()
-    prediction = model.predict(metadata)
+    interpreter = load_model()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+
+    input_data = np.array(metadata, dtype=np.float32)
+    interpreter.set_tensor(input_details[0]['index'], input_data)
+    interpreter.invoke()
+    prediction = interpreter.get_tensor(output_details[0]['index'])
     prediction = np.clip(prediction, 0, 100)
     return prediction
 
