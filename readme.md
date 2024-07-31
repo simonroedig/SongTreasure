@@ -63,5 +63,5 @@ to paste exactly into this file
    - *1 is the Loopback IP-Adress, it also resolves to http://localhost:8080/, with it you can access SongTreasure only from the computer you ran it from
    - *2 is the private IP-Adress of the device you ran it from, you can ALSO paste this IP into other devices' browser in your network and will see SongTreasure
    - Feel free to set a browser bookmark to access SongTreasure via the IP's quicker, however *2 might change depending on your router settings
-   - You can `stop SongTreasure with CTRL+C in your terminal`, you have to redo step 9, if you want to run SongTreasure again
+   - You can `stop SongTreasure with CTRL+C in your terminal`. You have to redo step 7, if you want to run SongTreasure again
 - **8.** If you have `any troubles` with installing and running, `feel free to reach out to us`
