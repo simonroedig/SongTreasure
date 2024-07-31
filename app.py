@@ -1,4 +1,4 @@
-# Python 3.11.0
+# Python 3.9.(13)
 import os
 from flask import Flask, jsonify, render_template, request, redirect, session, send_from_directory
 import spotifyAPI
